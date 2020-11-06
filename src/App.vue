@@ -17,13 +17,14 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    
 
     <b-sidebar id="sidebar-miners" title="Miners" shadow backdrop>
       <template #footer="{  }">
         <div class="p-3">
           <b-button block>
             <font-awesome-icon icon="plus" />
-            New miner
+            New miner host
           </b-button>
         </div>
       </template>
@@ -33,45 +34,22 @@
             <font-awesome-icon icon="cogs" /> Miner 1b<br>
             <font-awesome-icon icon="cogs" /> Miner 1c<br>
             <small><font-awesome-icon icon="circle" style="color: green" /> System online</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-1.herokyapp.com</code></small>
+            <small><font-awesome-icon icon="server" /> <code>test-miner-1.herokuapp.com</code></small>
         </b-list-group-item>
         <b-list-group-item class="bg-light">
             <font-awesome-icon icon="cogs" /> Miner 2<br>
             <small><font-awesome-icon icon="circle" style="color: green" /> System online</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-2.herokyapp.com</code></small>
+            <small><font-awesome-icon icon="server" /> <code>test-miner-2.herokuapp.com</code></small>
         </b-list-group-item>
         <b-list-group-item class="bg-light">
             <font-awesome-icon icon="cogs" /> Miner 3<br>
             <small><font-awesome-icon icon="circle" style="color: red" /> System offline</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-3.herokyapp.com</code></small>
+            <small><font-awesome-icon icon="server" /> <code>test-miner-3.herokuapp.com</code></small>
         </b-list-group-item>
       </b-list-group>
     </b-sidebar>
 
-    <b-sidebar id="sidebar-streams" title="Streams" shadow backdrop>
-      <template #footer="{  }">
-        <div class="p-3">
-          <b-button block>
-            <font-awesome-icon icon="plus" />
-            New stream
-          </b-button>
-        </div>
-      </template>
-      <b-list-group class="py-2" flush>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="film" /> Process name 1<br>
-            <small><font-awesome-icon icon="server" /> <code>mqtt-xes.broker.com</code> / <code>pmcep</code></small>
-        </b-list-group-item>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="film" /> Process name 2<br>
-            <small><font-awesome-icon icon="server" /> <code>mqtt-xes.broker.com</code> / <code>pmcep</code></small>
-        </b-list-group-item>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="film" /> BPI Challenge process 1<br>
-            <small><font-awesome-icon icon="server" /> <code>mqtt-xes.broker.com</code> / <code>pmcep</code></small>
-        </b-list-group-item>
-      </b-list-group>
-    </b-sidebar>
+    <SidebarStreams v-bind:streams="streams" />
 
     <b-container fluid>
       <b-row>
@@ -125,9 +103,25 @@
 </template>
 
 <script>
+import SidebarStreams from './components/widgets/SidebarStreams'
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    SidebarStreams
+  },
+  data() {
+    return {
+      streams: [
+        {processName:"p1",
+        brokerHost:"br1",
+        topicBase:"t1"},
+        {processName:"p2",
+        brokerHost:"br2",
+        topicBase:"t2"}
+      ]
+    }
+  }
 };
 </script>
 
