@@ -19,36 +19,7 @@
     </b-navbar>
     
 
-    <b-sidebar id="sidebar-miners" title="Miners" shadow backdrop>
-      <template #footer="{  }">
-        <div class="p-3">
-          <b-button block>
-            <font-awesome-icon icon="plus" />
-            New miner host
-          </b-button>
-        </div>
-      </template>
-      <b-list-group class="py-2" flush>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="cogs" /> Miner 1a<br>
-            <font-awesome-icon icon="cogs" /> Miner 1b<br>
-            <font-awesome-icon icon="cogs" /> Miner 1c<br>
-            <small><font-awesome-icon icon="circle" style="color: green" /> System online</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-1.herokuapp.com</code></small>
-        </b-list-group-item>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="cogs" /> Miner 2<br>
-            <small><font-awesome-icon icon="circle" style="color: green" /> System online</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-2.herokuapp.com</code></small>
-        </b-list-group-item>
-        <b-list-group-item class="bg-light">
-            <font-awesome-icon icon="cogs" /> Miner 3<br>
-            <small><font-awesome-icon icon="circle" style="color: red" /> System offline</small><br>
-            <small><font-awesome-icon icon="server" /> <code>test-miner-3.herokuapp.com</code></small>
-        </b-list-group-item>
-      </b-list-group>
-    </b-sidebar>
-
+    <SidebarMiners :miners="miners" @add-miner="addMiner" />
     <SidebarStreams v-bind:streams="streams" />
 
     <b-container fluid>
@@ -56,8 +27,7 @@
         <b-col cols="2" class="bg-light border-right full-height px-0">
           <header class="mx-3 mt-3"><h5>Instances</h5></header>
           <b-list-group class="py-2" flush>
-            <b-list-group-item class="bg-light" href="#">
-                <font-awesome-icon icon="angle-down" v-b-toggle.details1 class="float-right" />
+            <b-list-group-item class="bg-light" href="#" v-b-toggle.details1>
                 <font-awesome-icon icon="sliders-h" /> Instance 1
                 <b-collapse id="details1">
                   <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
@@ -66,8 +36,7 @@
                   <small><font-awesome-icon icon="circle" style="color: green" /> Status: running</small>
                 </b-collapse>
             </b-list-group-item>
-            <b-list-group-item class="bg-light" href="#">
-                <font-awesome-icon icon="angle-down" v-b-toggle.details2 class="float-right" />
+            <b-list-group-item class="bg-light" href="#" v-b-toggle.details2>
                 <font-awesome-icon icon="sliders-h" /> Instance 2
                 <b-collapse id="details2">
                   <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
@@ -76,8 +45,7 @@
                   <small><font-awesome-icon icon="circle" style="color: red" /> Status: not running</small>
                 </b-collapse>
             </b-list-group-item>
-            <b-list-group-item class="bg-light" href="#">
-                <font-awesome-icon icon="angle-down" v-b-toggle.details3 class="float-right" />
+            <b-list-group-item class="bg-light" href="#" v-b-toggle.details3>
                 <font-awesome-icon icon="sliders-h" /> Instance 3
                 <b-collapse id="details3">
                   <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
@@ -104,22 +72,24 @@
 
 <script>
 import SidebarStreams from './components/widgets/SidebarStreams'
+import SidebarMiners from './components/widgets/SidebarMiners'
 
 export default {
   name: "App",
   components: {
-    SidebarStreams
+    SidebarStreams,
+    SidebarMiners
   },
   data() {
     return {
-      streams: [
-        {processName:"p1",
-        brokerHost:"br1",
-        topicBase:"t1"},
-        {processName:"p2",
-        brokerHost:"br2",
-        topicBase:"t2"}
-      ]
+      streams: [],
+      miners: {}
+    }
+  },
+  methods: {
+    addMiner(event) {
+      this.$set(this.miners, event.host, event.miners);
+      this.$toastr.s("New miner added");
     }
   }
 };
