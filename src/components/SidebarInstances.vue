@@ -13,7 +13,7 @@
                   <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
                   <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
                   <small><font-awesome-icon icon="chart-bar" /> Events: --</small><br>
-                  <small><font-awesome-icon icon="circle" /> Status: --</small>
+                  <small><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
                 </b-collapse>
             </b-list-group-item>
           </b-list-group>
@@ -56,6 +56,16 @@ export default {
       }
     },
     methods: {
+      minerIdToHost(minerId) {
+        for(const host in this.miners) {
+          for (const miner in this.miners[host]) {
+            if (this.miners[host][miner].id == minerId) {
+              return host;
+            }
+          }
+        }
+        return 'null';
+      },
       newInstance(event) {
         this.miner = event.miner;
         this.stream = event.stream;

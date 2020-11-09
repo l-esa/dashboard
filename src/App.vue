@@ -91,14 +91,12 @@ export default {
     },
 
     createInstance(event) {
-      console.log(event);
       axios.post(this.$minerServices.createInstance(event.host, event.miner.id), {
         name: event.name,
         stream: event.stream,
         parameterValues: event.parameterValues
       })
-        .then(res => {
-          console.log(res);
+        .then(() => {
           this.refreshData();
           this.$toastr.s("New instance created");
         })
@@ -128,11 +126,11 @@ export default {
     clearInterval(this.polling)
   },
   mounted() {
-    this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    this.addMiner({host: "localhost:8083"})
+    // this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    // this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    // this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    // this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    // this.addMiner({host: "localhost:8083"})
   },
   created() {
     this.pollData();
