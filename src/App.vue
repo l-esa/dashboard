@@ -19,7 +19,12 @@
     </b-navbar>
     
 
-    <SidebarMiners :miners="miners" @add-miner="addMiner" />
+    <SidebarMiners
+      :miners="miners"
+      :minersStatus="minersStatus"
+      @connecting-miner="connectingMiner"
+      @add-miner="addMiner"
+      @offline-miner="offlineMiner" />
     <SidebarStreams v-bind:streams="streams" />
 
     <b-container fluid>
@@ -83,13 +88,22 @@ export default {
   data() {
     return {
       streams: [],
-      miners: {}
+      miners: {},
+      minersStatus: {}
     }
   },
   methods: {
+    connectingMiner(event) {
+      this.$set(this.minersStatus, event.host, 'connecting');
+      this.$set(this.miners, event.host, {});
+    },
     addMiner(event) {
+      this.$set(this.minersStatus, event.host, 'online');
       this.$set(this.miners, event.host, event.miners);
       this.$toastr.s("New miner added");
+    },
+    offlineMiner(event) {
+      this.$set(this.minersStatus, event.host, 'offline');
     }
   }
 };

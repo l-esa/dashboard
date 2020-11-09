@@ -21,11 +21,13 @@ export default {
     },
     methods: {
         registerMiner() {
+            this.$emit('connecting-miner', {host: this.minerHost});
             axios.get(this.minerHost + "/api/v1/miners")
                 .then(res => {
                     this.$emit('add-miner', {host: this.minerHost, miners: res.data})
                 })
                 .catch(err => {
+                    this.$emit('offline-miner', {host: this.minerHost});
                     this.$toastr.e(err);
                 });
         }
