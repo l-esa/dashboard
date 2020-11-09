@@ -34,7 +34,8 @@
         </b-col>
         <b-col class="p-3">
           <router-view
-            :instances="instances" />
+            :instances="instances"
+            @delete-instance="deleteInstance" />
         </b-col>
       </b-row>
     </b-container>
@@ -83,7 +84,6 @@ export default {
     },
 
     addStream(event) {
-      // if (!(event in this.streams)) {
       if (_.find(this.streams, event) == undefined) {
         this.streams.push(event);
         this.$toastr.s("New stream added");
@@ -105,6 +105,17 @@ export default {
         .catch(err => console.error(err));
     },
 
+    deleteInstance(event) {
+      axios.delete(this.$minerServices.deleteInstance(this.minerIdToHost(event.miner.id), event.id))
+        .then(() => {
+          this.refreshData();
+          this.$delete(this.instances, event.id);
+          this.$toastr.s("Instance deleted");
+          this.$router.push("/");
+        })
+        .catch(err => console.error(err));
+    },
+
     refreshData() {
       for(const host in this.miners) {
         axios.get(this.$minerServices.getInstances(host))
@@ -121,6 +132,17 @@ export default {
       }
     },
 
+    minerIdToHost(minerId) {
+      for(const host in this.miners) {
+        for (const miner in this.miners[host]) {
+          if (this.miners[host][miner].id == minerId) {
+            return host;
+          }
+        }
+      }
+      return 'null';
+    },
+
     pollData() {
       this.polling = setInterval(this.refreshData, 1000 * 30);
     }
@@ -129,11 +151,11 @@ export default {
     clearInterval(this.polling)
   },
   mounted() {
-    // this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addMiner({host: "localhost:8083"})
+    this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addMiner({host: "localhost:8083"})
     this.addMiner({host: "miner-backend-us1.herokuapp.com"})
   },
   created() {

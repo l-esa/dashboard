@@ -10,20 +10,12 @@
             </div>
         </template>
         <b-list-group class="py-2" flush>
-            <StreamMenuItem
-                v-bind:key="s.name"
-                v-for="s in streams"
-                :processName="s.processName"
-                :brokerHost="s.brokerHost"
-                :topicBase="s.topicBase"
-                />
-
-            <!-- <b-list-group-item class="bg-light"
+            <b-list-group-item class="bg-light"
                 v-bind:key="s.name"
                 v-for="s in streams">
                 <font-awesome-icon icon="film" /> {{ s.processName }}<br>
                 <small><font-awesome-icon icon="server" /> <code>{{ s.brokerHost }}</code> / <code>{{ s.topicBase }}</code></small>
-            </b-list-group-item> -->
+            </b-list-group-item>
         </b-list-group>
         </b-sidebar>
 
@@ -35,14 +27,12 @@
 
 <script>
 import NewStream from '../modals/NewStream';
-import StreamMenuItem from './widgets/StreamMenuItem';
 
 export default {
     name: 'SidebarStream',
     props: ['streams'],
     components: {
-        NewStream,
-        StreamMenuItem
+        NewStream
     }
 }
 </script>

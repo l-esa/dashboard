@@ -10,4 +10,8 @@ export default class MinerServices {
     createInstance(host, minerId) {
         return "http://" + host + "/api/v1/instances/" + minerId;
     }
+
+    deleteInstance(host, instanceId) {
+        return "http://" + host + "/api/v1/instances/" + instanceId + "/delete";
+    }
 }
