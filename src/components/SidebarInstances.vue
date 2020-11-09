@@ -8,7 +8,7 @@
                 v-bind:key="i.id"
                 v-for="i in instances"
                 v-b-toggle="'details-id-' + i.id">
-                <font-awesome-icon icon="sliders-h" /> {{ i.id }}
+                <font-awesome-icon icon="sliders-h" /> {{ i.configuration.name }}
                 <b-collapse :id="'details-id-' + i.id">
                   <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
                   <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
@@ -27,9 +27,10 @@
           <NewInstance
             :streams="streams"
             :miners="miners"
-            @new-instance="configureInstance" />
+            @new-instance="newInstance" />
           <ConfigureInstance
-            :miner="miner" />
+            :miner="miner"
+            @configure-instance="configureInstance" />
     </div>
 </template>
 
@@ -48,13 +49,32 @@ export default {
       return {
         miner: {
           name: null
-        }
+        },
+        stream: {},
+        name: '',
+        host: ''
       }
     },
     methods: {
-      configureInstance(event) {
+      newInstance(event) {
         this.miner = event.miner;
-        this.$bvModal.show('configure-instance');
+        this.stream = event.stream;
+        this.name = event.name;
+        this.host = event.host;
+        if (this.miner.configurationParameters.length > 0) {
+          this.$bvModal.show('configure-instance');
+        } else {
+          this.configureInstance([]);
+        }
+      },
+      configureInstance(event) {
+        this.$emit('create-instance', {
+          miner: this.miner,
+          stream: this.stream,
+          parameterValues: event,
+          name: this.name,
+          host: this.host
+        });
       }
     }
 }

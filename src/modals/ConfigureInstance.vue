@@ -1,7 +1,8 @@
 <template>
     <b-modal
         id="configure-instance"
-        :title="'Configure Miner: ' + miner.name">
+        :title="'Configure Miner: ' + miner.name"
+        @ok="configureInstance">
         
         <b-form-group
             :key="p.name"
@@ -19,6 +20,17 @@ export default {
     data() {
         return {
             parameters: {}
+        }
+    },
+    methods: {
+        configureInstance() {
+            var params = [];
+            var arr = Object.keys(this.parameters);
+            for (var index = 0; index < arr.length; ++index) {
+                var name = arr[index];
+                params.push({ [name]: this.parameters[name]});
+            }
+            this.$emit('configure-instance', params);
         }
     }
 }

@@ -34,7 +34,8 @@
           <SidebarInstances
             :streams="streams"
             :miners="miners"
-            :instances="instances" />
+            :instances="instances"
+            @create-instance="createInstance" />
         </b-col>
         <b-col class="p-3">
           <h3>Miner</h3>
@@ -89,6 +90,21 @@ export default {
       this.$toastr.s("New stream added");
     },
 
+    createInstance(event) {
+      console.log(event);
+      axios.post(this.$minerServices.createInstance(event.host, event.miner.id), {
+        name: event.name,
+        stream: event.stream,
+        parameterValues: event.parameterValues
+      })
+        .then(res => {
+          console.log(res);
+          this.refreshData();
+          this.$toastr.s("New instance created");
+        })
+        .catch(err => console.error(err));
+    },
+
     refreshData() {
       for(const host in this.miners) {
         axios.get(this.$minerServices.getInstances(host))
@@ -113,6 +129,9 @@ export default {
   },
   mounted() {
     this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addMiner({host: "localhost:8083"})
   },
   created() {

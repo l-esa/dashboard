@@ -23,15 +23,15 @@
         <b-form-group>
             <b-dropdown :text="'Select Miner (' + miner.name + ')'" block variant="outline-secondary">
                 <b-dropdown-group
-                    v-bind:key="host"
-                    v-for="host in Object.keys(miners)">
+                    v-bind:key="h"
+                    v-for="h in Object.keys(miners)">
                     <b-dropdown-item
                         class="py-2"
                         v-bind:key="m.id"
-                        v-for="m in miners[host]"
-                        @click="miner=m">
+                        v-for="m in miners[h]"
+                        @click="miner=m; host=h">
                         <font-awesome-icon icon="cogs" /> {{ m.name }}<br>
-                        <small><font-awesome-icon icon="server" /> <code>{{ host }}</code></small>
+                        <small><font-awesome-icon icon="server" /> <code>{{ h }}</code></small>
                     </b-dropdown-item>
                 </b-dropdown-group>
             </b-dropdown>
@@ -52,12 +52,13 @@ export default {
             },
             miner: {
                 name: ''
-            }
+            },
+            host: ''
         }
     },
     methods: {
         createInstance() {
-            this.$emit('new-instance', {name: this.name, stream: this.stream, miner: this.miner});
+            this.$emit('new-instance', {name: this.name, stream: this.stream, miner: this.miner, host: this.host});
         }
     }
 }
