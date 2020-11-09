@@ -32,42 +32,8 @@
     <b-container fluid>
       <b-row>
         <b-col cols="2" class="bg-light border-right full-height px-0">
-          <header class="mx-3 mt-3"><h5>Instances</h5></header>
-          <b-list-group class="py-2" flush>
-            <b-list-group-item class="bg-light" href="#" v-b-toggle.details1>
-                <font-awesome-icon icon="sliders-h" /> Instance 1
-                <b-collapse id="details1">
-                  <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
-                  <small><font-awesome-icon icon="cogs" /> Miner 2</small><br>
-                  <small><font-awesome-icon icon="chart-bar" /> Events: 5k</small><br>
-                  <small><font-awesome-icon icon="circle" style="color: green" /> Status: running</small>
-                </b-collapse>
-            </b-list-group-item>
-            <b-list-group-item class="bg-light" href="#" v-b-toggle.details2>
-                <font-awesome-icon icon="sliders-h" /> Instance 2
-                <b-collapse id="details2">
-                  <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
-                  <small><font-awesome-icon icon="cogs" /> Miner 2</small><br>
-                  <small><font-awesome-icon icon="chart-bar" /> Events: 0</small><br>
-                  <small><font-awesome-icon icon="circle" style="color: red" /> Status: not running</small>
-                </b-collapse>
-            </b-list-group-item>
-            <b-list-group-item class="bg-light" href="#" v-b-toggle.details3>
-                <font-awesome-icon icon="sliders-h" /> Instance 3
-                <b-collapse id="details3">
-                  <small><font-awesome-icon icon="film" /> BPI Challenge process 1</small><br>
-                  <small><font-awesome-icon icon="cogs" /> Miner 2</small><br>
-                  <small><font-awesome-icon icon="chart-bar" /> Events: 0</small><br>
-                  <small><font-awesome-icon icon="circle" style="color: red" /> Status: not running</small>
-                </b-collapse>
-            </b-list-group-item>
-          </b-list-group>
-          <div class="p-3">
-            <b-button block>
-              <font-awesome-icon icon="plus" />
-              New instance
-            </b-button>
-          </div>
+          <SidebarInstances
+            :instances="instances" />
         </b-col>
         <b-col class="p-3">
           <h3>Miner</h3>
@@ -78,20 +44,26 @@
 </template>
 
 <script>
-import SidebarStreams from './components/widgets/SidebarStreams'
-import SidebarMiners from './components/widgets/SidebarMiners'
+import SidebarStreams from './components/widgets/SidebarStreams';
+import SidebarMiners from './components/widgets/SidebarMiners';
+import SidebarInstances from './components/widgets/SidebarInstances';
+import axios from 'axios';
 
 export default {
   name: "App",
   components: {
     SidebarStreams,
-    SidebarMiners
+    SidebarMiners,
+    SidebarInstances
   },
   data() {
     return {
       streams: [],
       miners: {},
-      minersStatus: {}
+      minersStatus: {},
+      instances: {},
+
+      polling: null
     }
   },
   methods: {
@@ -102,6 +74,7 @@ export default {
     addMiner(event) {
       this.$set(this.minersStatus, event.host, 'online');
       this.$set(this.miners, event.host, event.miners);
+      this.refreshData();
       this.$toastr.s("New miner added");
     },
     offlineMiner(event) {
@@ -111,7 +84,32 @@ export default {
     addStream(event) {
       this.streams.push(event);
       this.$toastr.s("New stream added");
+    },
+
+    refreshData() {
+      for(const host in this.miners) {
+        axios.get(this.$minerServices.getInstances(host))
+          .then(res => {
+            for (const idx in res.data) {
+              var instance = res.data[idx];
+              if (!(instance.id in this.instances)) {
+                this.$set(this.instances, instance.id, instance);
+              }
+            }
+          })
+          .catch(err => console.error(err));
+      }
+    },
+
+    pollData() {
+      this.polling = setInterval(this.refreshData, 1000 * 30);
     }
+  },
+  beforeDestroy () {
+    clearInterval(this.polling)
+  },
+  created () {
+    this.pollData()
   }
 };
 </script>

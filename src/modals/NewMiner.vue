@@ -22,7 +22,7 @@ export default {
     methods: {
         registerMiner() {
             this.$emit('connecting-miner', {host: this.minerHost});
-            axios.get(this.minerHost + "/api/v1/miners")
+            axios.get(this.$minerServices.getMiners(this.minerHost))
                 .then(res => {
                     this.$emit('add-miner', {host: this.minerHost, miners: res.data})
                 })

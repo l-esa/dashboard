@@ -24,6 +24,12 @@ Vue.use(VueToastr, {
   }
 });
 
+// backend service
+import MinerServices from './services/MinerServices.js';
+Vue.prototype.$minerServices = new MinerServices();
+
+// ---
+
 Vue.config.productionTip = false
 
 new Vue({
