@@ -42,7 +42,6 @@ export default {
     },
     methods: {
         getMinerStatus(host) {
-            console.log(host);
             if (this.minersStatus[host] == "online") {
                 return "System online";
             } else if (this.minersStatus[host] == "connecting") {
