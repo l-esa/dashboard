@@ -22,9 +22,8 @@
     <SidebarMiners
       :miners="miners"
       :minersStatus="minersStatus"
-      @connecting-miner="connectingMiner"
-      @add-miner="addMiner"
-      @offline-miner="offlineMiner" />
+      @add-miner="addMiner" />
+
     <SidebarStreams
       :streams="streams"
       @add-stream="addStream" />
@@ -33,6 +32,8 @@
       <b-row>
         <b-col cols="2" class="bg-light border-right full-height px-0">
           <SidebarInstances
+            :streams="streams"
+            :miners="miners"
             :instances="instances" />
         </b-col>
         <b-col class="p-3">
@@ -44,9 +45,9 @@
 </template>
 
 <script>
-import SidebarStreams from './components/widgets/SidebarStreams';
-import SidebarMiners from './components/widgets/SidebarMiners';
-import SidebarInstances from './components/widgets/SidebarInstances';
+import SidebarStreams from './components/SidebarStreams';
+import SidebarMiners from './components/SidebarMiners';
+import SidebarInstances from './components/SidebarInstances';
 import axios from 'axios';
 
 export default {
@@ -67,18 +68,20 @@ export default {
     }
   },
   methods: {
-    connectingMiner(event) {
-      this.$set(this.minersStatus, event.host, 'connecting');
-      this.$set(this.miners, event.host, {});
-    },
     addMiner(event) {
-      this.$set(this.minersStatus, event.host, 'online');
-      this.$set(this.miners, event.host, event.miners);
-      this.refreshData();
-      this.$toastr.s("New miner added");
-    },
-    offlineMiner(event) {
-      this.$set(this.minersStatus, event.host, 'offline');
+      this.$set(this.miners, event.host, {});
+      this.$set(this.minersStatus, event.host, 'connecting');
+      axios.get(this.$minerServices.getMiners(event.host))
+        .then(res => {
+            this.$set(this.minersStatus, event.host, 'online');
+            this.$set(this.miners, event.host, res.data);
+            this.refreshData();
+            this.$toastr.s("New miner added");
+        })
+        .catch(err => {
+            this.$set(this.minersStatus, event.host, 'offline');
+            this.$toastr.e(err);
+        });
     },
 
     addStream(event) {
@@ -105,11 +108,15 @@ export default {
       this.polling = setInterval(this.refreshData, 1000 * 30);
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.polling)
   },
-  created () {
-    this.pollData()
+  mounted() {
+    this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addMiner({host: "localhost:8083"})
+  },
+  created() {
+    this.pollData();
   }
 };
 </script>

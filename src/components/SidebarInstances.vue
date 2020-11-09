@@ -18,17 +18,44 @@
             </b-list-group-item>
           </b-list-group>
           <div class="p-3">
-            <b-button block>
+            <b-button block v-b-modal.new-instance>
               <font-awesome-icon icon="plus" />
               New instance
             </b-button>
           </div>
+
+          <NewInstance
+            :streams="streams"
+            :miners="miners"
+            @new-instance="configureInstance" />
+          <ConfigureInstance
+            :miner="miner" />
     </div>
 </template>
 
 <script>
+import NewInstance from '../modals/NewInstance';
+import ConfigureInstance from '../modals/ConfigureInstance';
+
 export default {
     name: 'SidebarInstances',
-    props: ['instances']
+    props: ['streams','miners','instances'],
+    components: {
+      NewInstance,
+      ConfigureInstance
+    },
+    data() {
+      return {
+        miner: {
+          name: null
+        }
+      }
+    },
+    methods: {
+      configureInstance(event) {
+        this.miner = event.miner;
+        this.$bvModal.show('configure-instance');
+      }
+    }
 }
 </script>

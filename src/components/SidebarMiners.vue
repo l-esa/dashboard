@@ -25,14 +25,12 @@
         </b-sidebar>
 
         <NewMiner
-            @connecting-miner="$emit('connecting-miner', $event)"
-            @add-miner="$emit('add-miner', $event)"
-            @offline-miner="$emit('offline-miner', $event)" />
+            @add-miner="$emit('add-miner', $event)" />
     </div>
 </template>
 
 <script>
-import NewMiner from '../../modals/NewMiner';
+import NewMiner from '../modals/NewMiner';
 
 export default {
     name: 'SidebarMiners',
