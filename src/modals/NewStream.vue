@@ -27,7 +27,7 @@ export default {
     },
     methods: {
         createStream() {
-            this.streams.push({processName: this.processName, brokerHost: this.brokerHost, topicBase: this.topicBase});
+            this.$emit('add-stream', {processName: this.processName, brokerHost: this.brokerHost, topicBase: this.topicBase})
         }
     }
 }

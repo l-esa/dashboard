@@ -63,7 +63,7 @@ export default {
     color: rgb(170, 20, 20);
 }
 
-.connceting {
+.connecting {
     color: rgb(180, 141, 56);
 }
 </style>

@@ -19,7 +19,9 @@
         </b-list-group>
         </b-sidebar>
 
-        <NewStream v-bind:streams="streams" />
+        <NewStream
+            @add-stream="$emit('add-stream', $event)"
+            :streams="streams" />
     </div>
 </template>
 

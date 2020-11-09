@@ -25,7 +25,9 @@
       @connecting-miner="connectingMiner"
       @add-miner="addMiner"
       @offline-miner="offlineMiner" />
-    <SidebarStreams v-bind:streams="streams" />
+    <SidebarStreams
+      :streams="streams"
+      @add-stream="addStream" />
 
     <b-container fluid>
       <b-row>
@@ -104,6 +106,11 @@ export default {
     },
     offlineMiner(event) {
       this.$set(this.minersStatus, event.host, 'offline');
+    },
+
+    addStream(event) {
+      this.streams.push(event);
+      this.$toastr.s("New stream added");
     }
   }
 };
