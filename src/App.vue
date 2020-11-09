@@ -1,23 +1,18 @@
 <template>
   <div id="app">
-
     <b-navbar toggleable="lg" type="dark" variant="dark" class="shadow">
       <b-navbar-brand href="#">OPM Dashboard</b-navbar-brand>
-
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item v-b-toggle.sidebar-streams>Streams</b-nav-item>
           <b-nav-item v-b-toggle.sidebar-miners>Miners</b-nav-item>
         </b-navbar-nav>
-
         <b-navbar-nav class="ml-auto">
           <b-nav-item>About</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    
 
     <SidebarMiners
       :miners="miners"
@@ -38,7 +33,8 @@
             @create-instance="createInstance" />
         </b-col>
         <b-col class="p-3">
-          <h3>Miner</h3>
+          <router-view
+            :instances="instances" />
         </b-col>
       </b-row>
     </b-container>
@@ -50,6 +46,7 @@ import SidebarStreams from './components/SidebarStreams';
 import SidebarMiners from './components/SidebarMiners';
 import SidebarInstances from './components/SidebarInstances';
 import axios from 'axios';
+import _ from 'lodash';
 
 export default {
   name: "App",
@@ -86,8 +83,13 @@ export default {
     },
 
     addStream(event) {
-      this.streams.push(event);
-      this.$toastr.s("New stream added");
+      // if (!(event in this.streams)) {
+      if (_.find(this.streams, event) == undefined) {
+        this.streams.push(event);
+        this.$toastr.s("New stream added");
+      } else {
+        this.$toastr.w("Stream already there");
+      }
     },
 
     createInstance(event) {
@@ -111,6 +113,7 @@ export default {
               var instance = res.data[idx];
               if (!(instance.id in this.instances)) {
                 this.$set(this.instances, instance.id, instance);
+                this.addStream(instance.configuration.stream);
               }
             }
           })
@@ -128,9 +131,10 @@ export default {
   mounted() {
     // this.addStream({processName: "Hospital log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addMiner({host: "localhost:8083"})
+    this.addMiner({host: "miner-backend-us1.herokuapp.com"})
   },
   created() {
     this.pollData();
