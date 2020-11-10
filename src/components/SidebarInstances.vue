@@ -12,7 +12,7 @@
                   size="sm"
                   variant="outline-secondary"
                   class="float-right ml-1"
-                  :to="{ name: 'InstanceViewer', params: { id: i.id }}"
+                  :to="{ name: 'InstanceViewer', params: { id: i.id, host: minerIdToHost(i.miner.id) }}"
                   v-b-tooltip.hover.bottom="'Open this instance'"
                   v-on:click.stop="">
                   <font-awesome-icon icon="folder-open" />
@@ -22,6 +22,8 @@
                 <b-collapse :id="'details-id-' + i.id">
                   <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
                   <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
+                  <small><font-awesome-icon icon="circle"
+                    :class="instancesStatus[i.id]? 'running' : 'not-running'" /> {{ instancesStatus[i.id] }}</small><br>
                   <!-- <small><font-awesome-icon icon="chart-bar" /> Events: --</small><br> -->
                   <small><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
                   
@@ -51,7 +53,7 @@ import ConfigureInstance from '../modals/ConfigureInstance';
 
 export default {
     name: 'SidebarInstances',
-    props: ['streams','miners','instances'],
+    props: ['streams','miners','instances','instancesStatus'],
     components: {
       NewInstance,
       ConfigureInstance
@@ -100,3 +102,13 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.running {
+    color: rgb(0, 204, 0);
+}
+
+.not-running {
+    color: rgb(170, 20, 20);
+}
+</style>
