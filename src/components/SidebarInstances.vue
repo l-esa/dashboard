@@ -23,8 +23,10 @@
                   <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
                   <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
                   <small><font-awesome-icon icon="circle"
-                    :class="instancesStatus[i.id]? 'running' : 'not-running'" /> {{ instancesStatus[i.id] }}</small><br>
-                  <!-- <small><font-awesome-icon icon="chart-bar" /> Events: --</small><br> -->
+                    :class="instancesStatus[i.id]? 'running' : 'not-running'" />&nbsp;
+                    <span v-if="instancesStatus[i.id]">Running</span>
+                    <span v-else>Not running</span>
+                  </small><br>
                   <small><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
                   
                 </b-collapse>

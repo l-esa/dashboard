@@ -124,6 +124,13 @@ export default {
           .then(res => {
             for (const idx in res.data) {
               var instance = res.data[idx];
+              axios.get(this.$minerServices.getInstanceRunning(host, instance.id),{
+                headers: {instanceId: instance.id}
+              })
+                .then((res) => {
+                  this.$set(this.instancesStatus, res.config.headers.instanceId, res.data);
+                })
+                .catch(err => console.error(err));
               if (!(instance.id in this.instances)) {
                 this.$set(this.instances, instance.id, instance);
                 this.addStream(instance.configuration.stream);
