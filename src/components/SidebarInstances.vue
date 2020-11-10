@@ -4,21 +4,27 @@
           <b-list-group class="py-2" flush>
             <b-list-group-item
                 class="bg-light"
-                
                 v-bind:key="i.id"
                 v-for="i in instances"
+                
                 v-b-toggle="'details-id-' + i.id">
-                <font-awesome-icon icon="sliders-h" /> {{ i.configuration.name }}
+                <b-button
+                  size="sm"
+                  variant="outline-secondary"
+                  class="float-right"
+                  :to="{ name: 'InstanceViewer', params: { id: i.id }}"
+                  v-b-tooltip.hover.left="'Open this instance'"
+                  v-on:click.stop="">
+                  <font-awesome-icon icon="folder-open" />
+                </b-button>
+                <font-awesome-icon icon="sliders-h" />
+                {{ i.configuration.name }}
                 <b-collapse :id="'details-id-' + i.id">
                   <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
                   <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
-                  <small><font-awesome-icon icon="chart-bar" /> Events: --</small><br>
+                  <!-- <small><font-awesome-icon icon="chart-bar" /> Events: --</small><br> -->
                   <small><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
-                  <b-button
-                    class="float-right"
-                    :to="{ name: 'InstanceViewer', params: { id: i.id }}">
-                    Open instance
-                  </b-button>
+                  
                 </b-collapse>
             </b-list-group-item>
           </b-list-group>
