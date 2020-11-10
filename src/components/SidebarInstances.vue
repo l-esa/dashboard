@@ -11,9 +11,9 @@
                 <b-button
                   size="sm"
                   variant="outline-secondary"
-                  class="float-right"
+                  class="float-right ml-1"
                   :to="{ name: 'InstanceViewer', params: { id: i.id }}"
-                  v-b-tooltip.hover.left="'Open this instance'"
+                  v-b-tooltip.hover.bottom="'Open this instance'"
                   v-on:click.stop="">
                   <font-awesome-icon icon="folder-open" />
                 </b-button>
