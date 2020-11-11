@@ -11,15 +11,15 @@
         <b-button-group class="float-right mr-3">
             <b-button
                 variant="outline-secondary"
-                :disabled="running"
-                @click="startInstance">
+                :disabled="instancesStatus[instance.id]"
+                @click="$emit('start-instance', {instance: instance, host: host})">
                 <font-awesome-icon icon="play" />
                 Start
             </b-button>
             <b-button
                 variant="outline-secondary"
-                :disabled="!running"
-                @click="stopInstance">
+                :disabled="!instancesStatus[instance.id]"
+                @click="$emit('stop-instance', {instance: instance, host: host})">
                 <font-awesome-icon icon="pause" />
                 Stop
             </b-button>
@@ -27,10 +27,10 @@
         <h3 class="border-bottom py-2">
             <font-awesome-icon icon="circle"
                 class="small"
-                :class="running? 'running' : 'not-running'" />
+                :class="instancesStatus[instance.id]? 'running' : 'not-running'" />
             {{ instance.configuration.name }}
             <small class="text-muted">
-                <span v-if="running">(instance running)</span>
+                <span v-if="instancesStatus[instance.id]">(instance running)</span>
                 <span v-else>(instance not running)</span>
             </small></h3>
     </div>
@@ -41,7 +41,7 @@ import axios from 'axios';
 
 export default {
     name: 'InstanceViewer',
-    props: ['instances'],
+    props: ['instances','instancesStatus'],
     data() {
         return {
             host: null,
@@ -50,8 +50,7 @@ export default {
                 configuration: {
                     name: null
                 }
-            },
-            running: ''
+            }
         }
     },
     created() {
@@ -73,30 +72,6 @@ export default {
                     this.$router.push("/");
                 }
             }
-        },
-        startInstance() {
-            axios.get(this.$minerServices.startInstance(this.host, this.instance.id))
-                .then(res => {
-                    if (res.data == true) {
-                        this.$toastr.s("Instance started");
-                        this.fetchData();
-                    } else {
-                        this.$toastr.e("Instance not started correctly");
-                    }
-                })
-                .catch(err => console.error(err));
-        },
-        stopInstance() {
-            axios.get(this.$minerServices.stopInstance(this.host, this.instance.id))
-                .then(res => {
-                    if (res.data == true) {
-                        this.$toastr.s("Instance stopped");
-                        this.fetchData();
-                    } else {
-                        this.$toastr.e("Instance not stopped correctly");
-                    }
-                })
-                .catch(err => console.error(err));
         }
     }
 }

@@ -36,7 +36,10 @@
         <b-col class="p-3">
           <router-view
             :instances="instances"
-            @delete-instance="deleteInstance" />
+            :instancesStatus="instancesStatus"
+            @delete-instance="deleteInstance"
+            @start-instance="startInstance"
+            @stop-instance="stopInstance" />
         </b-col>
       </b-row>
     </b-container>
@@ -103,6 +106,32 @@ export default {
         .then(() => {
           this.refreshData();
           this.$toastr.s("New instance created");
+        })
+        .catch(err => console.error(err));
+    },
+
+    startInstance(event) {
+      axios.get(this.$minerServices.startInstance(event.host, event.instance.id))
+        .then(res => {
+            if (res.data == true) {
+                this.$toastr.s("Instance started");
+                this.$set(this.instancesStatus, event.instance.id, true);
+            } else {
+                this.$toastr.e("Instance not started correctly");
+            }
+        })
+        .catch(err => console.error(err));
+    },
+
+    stopInstance(event) {
+      axios.get(this.$minerServices.stopInstance(event.host, event.instance.id))
+        .then(res => {
+            if (res.data == true) {
+                this.$toastr.s("Instance stopped");
+                this.$set(this.instancesStatus, event.instance.id, false);
+            } else {
+                this.$toastr.e("Instance not stopped correctly");
+            }
         })
         .catch(err => console.error(err));
     },
