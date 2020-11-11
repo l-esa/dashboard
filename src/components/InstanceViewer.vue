@@ -24,7 +24,7 @@
                 Stop
             </b-button>
         </b-button-group>
-        <h3 class="border-bottom py-2">
+        <h3 class="py-3">
             <font-awesome-icon icon="circle"
                 class="small"
                 :class="instancesStatus[instance.id]? 'running' : 'not-running'" />
@@ -32,7 +32,35 @@
             <small class="text-muted">
                 <span v-if="instancesStatus[instance.id]">(instance running)</span>
                 <span v-else>(instance not running)</span>
-            </small></h3>
+            </small>
+        </h3>
+        <b-tabs
+            v-if="instancesStatus[instance.id]"
+            content-class="mt-3">
+            <b-tab active>
+                <template #title>
+                    <font-awesome-icon icon="cogs" /> Configuration
+                </template>
+
+                <b-form-group
+                    :key="p.name"
+                    v-for="p in instance.miner.viewParameters"
+                    :label="p.name + ': (' + p.type + ')'">
+                    <b-form-input v-model="viewParameters[p.name]" required :placeholder="p.name"></b-form-input>
+                </b-form-group>
+
+                <b-button
+                    @click="updateViews">
+                    Update view
+                </b-button>
+            </b-tab>
+            <b-tab
+                v-bind:key="v.name"
+                v-for="v in views"
+                :title="v.name">
+                {{ v.value }}
+            </b-tab>
+        </b-tabs>
     </div>
 </template>
 
@@ -49,8 +77,13 @@ export default {
                 id: '',
                 configuration: {
                     name: null
+                },
+                miner: {
+                    viewParameters: []
                 }
-            }
+            },
+            viewParameters: {},
+            views: []
         }
     },
     created() {
@@ -65,13 +98,25 @@ export default {
                 if (this.$route.params.id in this.instances) {
                     this.instance = this.instances[this.$route.params.id];
                     this.host = this.$route.params.host;
-                    axios.get(this.$minerServices.getInstanceRunning(this.host, this.instance.id))
-                        .then(res => this.running = res.data)
-                        .catch(err => console.error(err));
                 } else {
                     this.$router.push("/");
                 }
             }
+        },
+        updateViews() {
+            var config = [];
+            for(const p in this.viewParameters) {
+                config.push({name: p, value: this.viewParameters[p]});
+            }
+            axios.post(this.$minerServices.getInstanceView(this.host, this.instance.id), config)
+                .then(res => {
+                    this.views = res.data;
+                    this.$toastr.s("Views updated successfully");
+                })
+                .catch(err => {
+                    console.error(err);
+                    this.$toastr.e("Error in updating views");
+                });
         }
     }
 }

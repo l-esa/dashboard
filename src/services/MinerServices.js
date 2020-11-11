@@ -11,16 +11,20 @@ export default class MinerServices {
         return "http://" + host + "/api/v1/instances/" + minerId;
     }
 
-    getInstanceRunning(host, minerId) {
-        return "http://" + host + "/api/v1/instances/" + minerId + "/status";
+    getInstanceRunning(host, instanceId) {
+        return "http://" + host + "/api/v1/instances/" + instanceId + "/status";
     }
 
-    startInstance(host, minerId) {
-        return "http://" + host + "/api/v1/instances/" + minerId + "/start";
+    getInstanceView(host, instanceId) {
+        return "http://" + host + "/api/v1/instances/" + instanceId + "/view";
     }
 
-    stopInstance(host, minerId) {
-        return "http://" + host + "/api/v1/instances/" + minerId + "/stop";
+    startInstance(host, instanceId) {
+        return "http://" + host + "/api/v1/instances/" + instanceId + "/start";
+    }
+
+    stopInstance(host, instanceId) {
+        return "http://" + host + "/api/v1/instances/" + instanceId + "/stop";
     }
 
     deleteInstance(host, instanceId) {

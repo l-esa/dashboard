@@ -193,7 +193,7 @@ export default {
     this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addMiner({host: "localhost:8083"})
+    this.addMiner({host: "localhost:8083"})
     this.addMiner({host: "miner-backend-us1.herokuapp.com"})
   },
   created() {

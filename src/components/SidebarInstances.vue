@@ -6,7 +6,6 @@
                 class="bg-light"
                 v-bind:key="i.id"
                 v-for="i in instances"
-                
                 v-b-toggle="'details-id-' + i.id">
                 <b-button
                   size="sm"
