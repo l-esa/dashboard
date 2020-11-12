@@ -57,8 +57,31 @@
             <b-tab
                 v-bind:key="v.name"
                 v-for="v in views"
-                :title="v.name">
-                {{ v.value }}
+                :title="v.name"
+                @click="activateTab(v)">
+                <div
+                    class="border w-100 p-2 raw-tab"
+                    v-if="v.type == 'RAW'"
+                    v-html="v.value">
+                </div>
+                <div v-if="v.type == 'GRAPHVIZ'">
+                    <SvgPanZoom
+                        class="border w-100 svg-panzoom"
+                        :class="{ 'loading' : !(v.name in dots) }"
+                        :viewportSelector="`.graph`"
+                        :zoomEnabled="true"
+                        :controlIconsEnabled="true"
+                        :panEnabled="true"
+                        :fit="false"
+                        :center="true"
+                        :minZoom="0.1"
+                        :maxZoom="3"
+                        @svgpanzoom="registerSvgPanZoom">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g class="svg-pan-zoom_viewport" v-html="dots[v.name]"></g>
+                        </svg>
+                    </SvgPanZoom>
+                </div>
             </b-tab>
         </b-tabs>
     </div>
@@ -66,10 +89,16 @@
 
 <script>
 import axios from 'axios';
+import Viz from "viz.js";
+import workerURL from 'file-loader!viz.js/full.render.js';
+import SvgPanZoom from "vue-svg-pan-zoom";
 
 export default {
     name: 'InstanceViewer',
     props: ['instances','instancesStatus'],
+    components: {
+        SvgPanZoom 
+    },
     data() {
         return {
             host: null,
@@ -83,7 +112,9 @@ export default {
                 }
             },
             viewParameters: {},
-            views: []
+            views: [],
+            dots: [],
+
         }
     },
     created() {
@@ -111,12 +142,33 @@ export default {
             axios.post(this.$minerServices.getInstanceView(this.host, this.instance.id), config)
                 .then(res => {
                     this.views = res.data;
+                    this.dots = [];
                     this.$toastr.s("Views updated successfully");
                 })
                 .catch(err => {
                     console.error(err);
                     this.$toastr.e("Error in updating views");
                 });
+        },
+        activateTab(v) {
+            if (v.type == "GRAPHVIZ") {
+                if (!(v.name in this.dots)) {
+                    var viz = new Viz({ workerURL });
+                    viz.renderSVGElement(v.value)
+                        .then(element => {
+                            this.viewBox = element.getAttribute("viewBox").split(" ").map(Math.ceil);
+                            let innerHTML = element.getElementsByClassName("graph")[0].innerHTML;
+                            this.$set(this.dots, v.name, innerHTML);
+                        })
+                        .catch(error => {
+                            this.$toastr.e("Error while rendering the graph");
+                            console.error(error);
+                        });
+                }
+            }
+        },
+        registerSvgPanZoom(svgpanzoom) {
+            this.svgpanzoom = svgpanzoom;
         }
     }
 }
@@ -129,5 +181,28 @@ export default {
 
 .not-running {
     color: rgb(170, 20, 20);
+}
+
+.loading {
+	background: url('../assets/loader.svg') center center no-repeat !important;
+}
+.svg-panzoom {
+    background-color: #fff;
+    /* overflow: hidden; */
+    margin-top: 1rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.svg-panzoom svg {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 250px);
+    /* overflow: hidden; */
+}
+.raw-tab {
+    height: calc(100vh - 250px);
+    overflow: auto;
 }
 </style>
