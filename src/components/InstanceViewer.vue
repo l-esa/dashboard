@@ -125,6 +125,9 @@ export default {
     },
     methods: {
         fetchData() {
+            this.viewParameters = {};
+            this.views = [];
+            this.dots = [];
             if ('id' in this.$route.params) {
                 if (this.$route.params.id in this.instances) {
                     this.instance = this.instances[this.$route.params.id];
