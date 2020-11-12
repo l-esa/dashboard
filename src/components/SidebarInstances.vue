@@ -26,8 +26,9 @@
                     <span v-if="instancesStatus[i.id]">Running</span>
                     <span v-else>Not running</span>
                   </small><br>
-                  <small><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
-                  
+                  <small
+                    v-b-tooltip.hover="minerIdToHost(i.miner.id)"
+                    style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
                 </b-collapse>
             </b-list-group-item>
           </b-list-group>
