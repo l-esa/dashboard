@@ -17,7 +17,7 @@ export default class MinerServices {
     }
 
     getInstanceView(host, instanceId) {
-        return host + "/api/v1/instances/" + instanceId + "/view";
+        return host + "/api/v1/instances/" + instanceId + "/views";
     }
 
     startInstance(host, instanceId) {

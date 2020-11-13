@@ -43,15 +43,26 @@
                         <h6 class="mb-0">View configuration</h6>
                     </template>
                     <b-card-text>
+                        <b-form-group>
+                            <b-form-checkbox v-model="autoRefresh" switch>
+                                Refresh on new values
+                            </b-form-checkbox>
+                        </b-form-group>
                         <b-form-group
                             :key="p.name"
                             v-for="p in instance.miner.viewParameters"
                             :label="p.name + ': (' + p.type + ')'">
-                            <b-form-input v-model="viewParameters[p.name]" required :placeholder="p.name"></b-form-input>
+                            <b-form-input
+                                v-model="viewParameters[p.name]"
+                                required
+                                :placeholder="p.name"
+                                debounce="500"
+                                @update="parameterValueUpdated"></b-form-input>
                         </b-form-group>
 
                         <b-button
-                            @click="updateViews">
+                            @click="updateViews"
+                            v-if="!autoRefresh">
                             Update view
                         </b-button>
                     </b-card-text>
@@ -59,14 +70,8 @@
             </b-col>
             <b-col cols="9">
                 <b-tabs
+                    v-model="currentlyActiveTab"
                     content-class="mt-3">
-                    <!-- <b-tab active>
-                        <template #title>
-                            <font-awesome-icon icon="cogs" /> Configuration
-                        </template>
-
-                        
-                    </b-tab> -->
                     <b-tab
                         v-bind:key="v.name"
                         v-for="v in views"
@@ -129,7 +134,8 @@ export default {
             viewParameters: {},
             views: [],
             dots: [],
-
+            autoRefresh: false,
+            currentlyActiveTab: 0
         }
     },
     created() {
@@ -143,6 +149,7 @@ export default {
             this.viewParameters = {};
             this.views = [];
             this.dots = [];
+            this.autoRefresh = false;
             if ('id' in this.$route.params) {
                 if (this.$route.params.id in this.instances) {
                     this.instance = this.instances[this.$route.params.id];
@@ -152,7 +159,13 @@ export default {
                 }
             }
         },
+        parameterValueUpdated() {
+            if (this.autoRefresh) {
+                this.updateViews();
+            }
+        },
         updateViews() {
+            console.log(this.currentlyActiveTab);
             var config = [];
             for(const p in this.viewParameters) {
                 config.push({name: p, value: this.viewParameters[p]});
