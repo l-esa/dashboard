@@ -28,7 +28,7 @@
                   </small><br>
                   <small
                     v-b-tooltip.hover="minerIdToHost(i.miner.id)"
-                    style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id) }}</code></small>
+                    style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id).replace("http://", "").replace("https://", "") }}</code></small>
                 </b-collapse>
             </b-list-group-item>
           </b-list-group>

@@ -34,56 +34,71 @@
                 <span v-else>(instance not running)</span>
             </small>
         </h3>
-        <b-tabs
-            v-if="instancesStatus[instance.id]"
-            content-class="mt-3">
-            <b-tab active>
-                <template #title>
-                    <font-awesome-icon icon="cogs" /> Configuration
-                </template>
+        <b-row
+            fluid
+            v-if="instancesStatus[instance.id]">
+            <b-col cols="3">
+                <b-card>
+                    <template #header>
+                        <h6 class="mb-0">View configuration</h6>
+                    </template>
+                    <b-card-text>
+                        <b-form-group
+                            :key="p.name"
+                            v-for="p in instance.miner.viewParameters"
+                            :label="p.name + ': (' + p.type + ')'">
+                            <b-form-input v-model="viewParameters[p.name]" required :placeholder="p.name"></b-form-input>
+                        </b-form-group>
 
-                <b-form-group
-                    :key="p.name"
-                    v-for="p in instance.miner.viewParameters"
-                    :label="p.name + ': (' + p.type + ')'">
-                    <b-form-input v-model="viewParameters[p.name]" required :placeholder="p.name"></b-form-input>
-                </b-form-group>
+                        <b-button
+                            @click="updateViews">
+                            Update view
+                        </b-button>
+                    </b-card-text>
+                </b-card>
+            </b-col>
+            <b-col cols="9">
+                <b-tabs
+                    content-class="mt-3">
+                    <!-- <b-tab active>
+                        <template #title>
+                            <font-awesome-icon icon="cogs" /> Configuration
+                        </template>
 
-                <b-button
-                    @click="updateViews">
-                    Update view
-                </b-button>
-            </b-tab>
-            <b-tab
-                v-bind:key="v.name"
-                v-for="v in views"
-                :title="v.name"
-                @click="activateTab(v)">
-                <div
-                    class="border w-100 p-2 raw-tab"
-                    v-if="v.type == 'RAW'"
-                    v-html="v.value">
-                </div>
-                <div v-if="v.type == 'GRAPHVIZ'">
-                    <SvgPanZoom
-                        class="border w-100 svg-panzoom"
-                        :class="{ 'loading' : !(v.name in dots) }"
-                        :viewportSelector="`.graph`"
-                        :zoomEnabled="true"
-                        :controlIconsEnabled="true"
-                        :panEnabled="true"
-                        :fit="false"
-                        :center="true"
-                        :minZoom="0.1"
-                        :maxZoom="3"
-                        @svgpanzoom="registerSvgPanZoom">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <g class="svg-pan-zoom_viewport" v-html="dots[v.name]"></g>
-                        </svg>
-                    </SvgPanZoom>
-                </div>
-            </b-tab>
-        </b-tabs>
+                        
+                    </b-tab> -->
+                    <b-tab
+                        v-bind:key="v.name"
+                        v-for="v in views"
+                        :title="v.name"
+                        @click="activateTab(v)">
+                        <div
+                            class="border w-100 p-2 raw-tab"
+                            v-if="v.type == 'RAW'"
+                            v-html="v.value">
+                        </div>
+                        <div v-if="v.type == 'GRAPHVIZ'">
+                            <SvgPanZoom
+                                class="border w-100 svg-panzoom"
+                                :class="{ 'loading' : !(v.name in dots) }"
+                                :viewportSelector="`.graph`"
+                                :zoomEnabled="true"
+                                :controlIconsEnabled="true"
+                                :panEnabled="true"
+                                :fit="false"
+                                :center="true"
+                                :minZoom="0.1"
+                                :maxZoom="3"
+                                @svgpanzoom="registerSvgPanZoom">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g class="svg-pan-zoom_viewport" v-html="dots[v.name]"></g>
+                                </svg>
+                            </SvgPanZoom>
+                        </div>
+                    </b-tab>
+                </b-tabs>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
