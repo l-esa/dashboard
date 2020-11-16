@@ -22,6 +22,9 @@
                         <small><font-awesome-icon icon="server" /> <code>{{ s.brokerHost }}</code> / <code>{{ s.topicBase }}</code></small>
                     </b-dropdown-item>
                 </b-dropdown>
+                <b-form-invalid-feedback :state="stream.processName !== ''">
+                    A stream has to be selected
+                </b-form-invalid-feedback>
             </b-form-group>
 
             <b-form-group>
@@ -39,6 +42,9 @@
                         </b-dropdown-item>
                     </b-dropdown-group>
                 </b-dropdown>
+                <b-form-invalid-feedback :state="miner.name !== ''">
+                    A miner has to be selected
+                </b-form-invalid-feedback>
             </b-form-group>
         </form>
     </b-modal>
@@ -83,7 +89,12 @@ export default {
             if (this.$v.$anyError) {
                 return;
             }
-            // this.$emit('add-miner', {host: this.minerHost});
+            if (this.stream.processName === '') {
+                return;
+            }
+            if (this.miner.name === '') {
+                return
+            }
             this.$emit('new-instance', {name: this.name, stream: this.stream, miner: this.miner, host: this.host});
             this.$nextTick(() => {this.$bvModal.hide('new-instance')});
         },
