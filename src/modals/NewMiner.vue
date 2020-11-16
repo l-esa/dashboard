@@ -7,7 +7,7 @@
             <ValidatedInputText
                 label="Miner host:"
                 placeholder="http://miner.host.net"
-                error="Enter the host of the miner (examples: <code>http://miner.host.net</code> or <code>https://miner.host.net</code>)."
+                error="Enter the host of the miner (examples: <code>http://miner.host.net</code> or <code>https://miner.host.net</code>)"
                 v-model="minerHost"
                 :state="validateState('minerHost')" />
         </form>
@@ -20,6 +20,7 @@ import { required, helpers } from 'vuelidate/lib/validators';
 const host = helpers.regex('host', /^https?:\/\/((?:[a-z0-9](?:[a-z0-9]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9]{0,61}[a-z0-9]|localhost)(:\d{0,5})?$/i);
 
 export default {
+    name: "NewMiner",
     props: ['miners'],
     components: {
         ValidatedInputText
