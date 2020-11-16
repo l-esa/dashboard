@@ -25,6 +25,11 @@ Vue.use(VueToastr, {
   }
 });
 
+// vuelidate
+import Vuelidate from 'vuelidate';
+Vue.use(Vuelidate)
+
+
 // backend service
 import MinerServices from './services/MinerServices.js';
 Vue.prototype.$minerServices = new MinerServices();
