@@ -17,7 +17,7 @@
 <script>
 import ValidatedInputText from '../components/ValidatedInputText';
 import { required, helpers } from 'vuelidate/lib/validators';
-const host = helpers.regex('host', /^https?:\/\/((?:[a-z0-9](?:[a-z0-9]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9]{0,61}[a-z0-9]|localhost)(:\d{0,5})?$/i);
+const host = helpers.regex('host', /^https?:\/\/((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9]{0,61}[a-z0-9]|localhost)(:\d{0,5})?$/i);
 
 export default {
     name: "NewMiner",
