@@ -52,7 +52,7 @@ export default {
         handleOk(bvModalEvt) {
             bvModalEvt.preventDefault();
             this.handleSubmit();
-         }
+        }
     }
 }
 </script>

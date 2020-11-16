@@ -76,7 +76,7 @@ export default {
             console.log(1);
             bvModalEvt.preventDefault();
             this.handleSubmit();
-         }
+        }
     }
 }
 </script>
