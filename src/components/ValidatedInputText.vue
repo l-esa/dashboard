@@ -1,7 +1,6 @@
 <template>
     <div>
         <b-form-group
-            
             v-bind:label="label"
             v-bind:state="state">
             <b-form-input
