@@ -63,7 +63,10 @@ export default {
             var arr = Object.keys(this.parameters);
             for (var index = 0; index < arr.length; ++index) {
                 var name = arr[index];
-                params.push({ [name]: this.parameters[name]});
+                params.push({
+                    name: name,
+                    value: this.parameters[name]
+                });
             }
             this.$emit('configure-instance', params);
 
