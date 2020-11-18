@@ -18,14 +18,23 @@
                 </b-button>
                 <font-awesome-icon icon="sliders-h" />
                 {{ i.configuration.name }}
-                <b-collapse :id="'details-id-' + i.id">
-                  <small><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small><br>
-                  <small><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small><br>
-                  <small><font-awesome-icon icon="circle"
+                <b-collapse class="pt-2" :id="'details-id-' + i.id">
+                  <small
+                    v-b-tooltip.hover="i.configuration.stream.processName"
+                    style="white-space: nowrap; overflow: hidden; display:block;"
+                    class="mb-1"
+                    ><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small>
+                  <small
+                    v-b-tooltip.hover="i.miner.name"
+                    style="white-space: nowrap; overflow: hidden; display:block;"
+                    class="mb-1"><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small>
+                  <small
+                    style="white-space: nowrap; overflow: hidden; display:block;"
+                    class="mb-1"><font-awesome-icon icon="circle"
                     :class="instancesStatus[i.id]? 'running' : 'not-running'" />&nbsp;
                     <span v-if="instancesStatus[i.id]">Running</span>
                     <span v-else>Not running</span>
-                  </small><br>
+                  </small>
                   <small
                     v-b-tooltip.hover="minerIdToHost(i.miner.id)"
                     style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id).replace("http://", "").replace("https://", "") }}</code></small>
