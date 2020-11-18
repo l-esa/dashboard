@@ -24,6 +24,20 @@
                 Stop
             </b-button>
         </b-button-group>
+        <b-button-group class="float-right mr-3" v-if="instancesStatus[instance.id]">
+            <b-button
+                variant="outline-secondary"
+                :disabled="!connected"
+                @click="disconnect">
+                <font-awesome-icon icon="bell-slash" />
+            </b-button>
+            <b-button
+                variant="outline-secondary"
+                :disabled="connected"
+                @click="connect">
+                <font-awesome-icon icon="bell" />
+            </b-button>
+        </b-button-group>
         <h3 class="py-3">
             <font-awesome-icon icon="circle"
                 class="small"
@@ -113,11 +127,14 @@ import Viz from "viz.js";
 import workerURL from 'file-loader!viz.js/full.render.js';
 import SvgPanZoom from "vue-svg-pan-zoom";
 
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {
     name: 'InstanceViewer',
     props: ['instances','instancesStatus'],
     components: {
-        SvgPanZoom 
+        SvgPanZoom
     },
     data() {
         return {
@@ -135,7 +152,9 @@ export default {
             views: [],
             dots: [],
             autoRefresh: false,
-            currentlyActiveTab: 0
+            currentlyActiveTab: 0,
+
+            connected: false
         }
     },
     created() {
@@ -154,6 +173,7 @@ export default {
                 if (this.$route.params.id in this.instances) {
                     this.instance = this.instances[this.$route.params.id];
                     this.host = this.$route.params.host;
+                    this.disconnect();
                 } else {
                     this.$router.push("/");
                 }
@@ -200,6 +220,26 @@ export default {
         },
         registerSvgPanZoom(svgpanzoom) {
             this.svgpanzoom = svgpanzoom;
+        },
+        connect() {
+            var _this = this;
+            this.socket = new SockJS(this.host + "/websockets");
+            this.stompClient = Stomp.over(this.socket);
+            this.stompClient.connect({}, () => {
+                    this.connected = true;
+                    this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
+                        _this.$toastr.i(message.body);
+                    });
+                }, error => {
+                    console.log(error);
+                    this.connected = false;
+                });
+        },
+        disconnect() {
+            if (this.stompClient) {
+                this.stompClient.disconnect();
+            }
+            this.connected = false;
         }
     }
 }

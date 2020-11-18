@@ -15,12 +15,14 @@
     "bootstrap-vue": "^2.19.0",
     "core-js": "^3.7.0",
     "lodash": "^4.17.20",
+    "sockjs-client": "^1.5.0",
     "viz.js": "^2.1.2",
     "vue": "^2.6.11",
     "vue-router": "^3.4.9",
     "vue-svg-pan-zoom": "^1.1.0",
     "vue-toastr": "^2.1.2",
-    "vuelidate": "^0.7.6"
+    "vuelidate": "^0.7.6",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
