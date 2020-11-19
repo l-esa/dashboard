@@ -89,8 +89,13 @@
                     <b-tab
                         v-bind:key="v.name"
                         v-for="v in views"
-                        :title="v.name"
                         @click="activateTab(v)">
+                        <template #title>
+                            {{ v.name }}
+                            <font-awesome-icon icon="file-alt" v-if="v.type == 'RAW'" />
+                            <font-awesome-icon icon="image" v-if="v.type == 'GRAPHVIZ'" />
+                            <font-awesome-icon icon="download" v-if="v.type == 'BINARY'" />
+                        </template>
                         <div
                             class="border w-100 p-2 raw-tab"
                             v-if="v.type == 'RAW'"
@@ -113,6 +118,13 @@
                                     <g class="svg-pan-zoom_viewport" v-html="dots[v.name]"></g>
                                 </svg>
                             </SvgPanZoom>
+                        </div>
+                        <div v-if="v.type == 'BINARY'">
+                            <b-button
+                                :href="host + v.value"
+                                target="_blank">
+                                Download
+                            </b-button>
                         </div>
                     </b-tab>
                 </b-tabs>
