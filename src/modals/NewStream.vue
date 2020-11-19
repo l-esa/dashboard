@@ -29,7 +29,7 @@
 <script>
 import ValidatedInputText from '../components/ValidatedInputText'
 import { required, helpers, minLength } from 'vuelidate/lib/validators'
-const host = helpers.regex('host', /^https?:\/\/((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9]{0,61}[a-z0-9]|localhost)(:\d{0,5})?$/i);
+const host = helpers.regex('host', /^((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9]{0,61}[a-z0-9]|localhost)(:\d{0,5})?$/i);
 const topic = helpers.regex('topic', /^([a-z0-9]\/?)*$/i);
 
 export default {
