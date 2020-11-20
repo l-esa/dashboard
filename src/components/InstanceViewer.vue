@@ -92,16 +92,17 @@
                         @click="activateTab(v)">
                         <template #title>
                             {{ v.name }}
-                            <font-awesome-icon icon="file-alt" v-if="v.type == 'RAW'" />
-                            <font-awesome-icon icon="image" v-if="v.type == 'GRAPHVIZ'" />
-                            <font-awesome-icon icon="download" v-if="v.type == 'BINARY'" />
+                            <font-awesome-icon icon="file-alt" v-if="v.type.toLowerCase() == 'raw'" />
+                            <font-awesome-icon icon="image" v-if="v.type.toLowerCase() == 'graphviz'" />
+                            <font-awesome-icon icon="download" v-if="v.type.toLowerCase() == 'binary'" />
+                            <font-awesome-icon icon="table" v-if="v.type.toLowerCase() == 'google'" />
                         </template>
                         <div
                             class="border w-100 p-2 raw-tab"
-                            v-if="v.type == 'RAW'"
+                            v-if="v.type.toLowerCase() == 'raw'"
                             v-html="v.value">
                         </div>
-                        <div v-if="v.type == 'GRAPHVIZ'">
+                        <div v-if="v.type.toLowerCase() == 'graphviz'">
                             <SvgPanZoom
                                 class="border w-100 svg-panzoom"
                                 :class="{ 'loading' : !(v.name in dots) }"
@@ -119,7 +120,11 @@
                                 </svg>
                             </SvgPanZoom>
                         </div>
-                        <div v-if="v.type == 'BINARY'">
+                        <div v-if="v.type.toLowerCase() == 'binary'">
+                            <p>File: 
+                                <code v-if="v.value.startsWith('http')" v-html="v.value" />
+                                <code v-if="!v.value.startsWith('http')" v-html="host + v.value" />
+                            </p>
                             <b-button
                                 v-if="v.value.startsWith('http')"
                                 :href="v.value"
@@ -133,6 +138,13 @@
                                 Download
                             </b-button>
                         </div>
+                        <div v-if="v.type.toLowerCase() == 'google'">
+                            <GChart
+                                :type="v.value.type"
+                                :data="v.value.data"
+                                :options="v.value.options"
+                                />
+                        </div>
                     </b-tab>
                 </b-tabs>
             </b-col>
@@ -145,6 +157,7 @@ import axios from 'axios';
 import Viz from "viz.js";
 import workerURL from 'file-loader!viz.js/full.render.js';
 import SvgPanZoom from "vue-svg-pan-zoom";
+import { GChart } from 'vue-google-charts';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -153,7 +166,7 @@ export default {
     name: 'InstanceViewer',
     props: ['instances','instancesStatus'],
     components: {
-        SvgPanZoom
+        SvgPanZoom, GChart
     },
     data() {
         return {
@@ -221,7 +234,7 @@ export default {
                 });
         },
         activateTab(v) {
-            if (v.type == "GRAPHVIZ") {
+            if (v.type.toLowerCase() == "graphviz") {
                 if (!(v.name in this.dots)) {
                     var viz = new Viz({ workerURL });
                     viz.renderSVGElement(v.value)
