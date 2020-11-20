@@ -121,6 +121,13 @@
                         </div>
                         <div v-if="v.type == 'BINARY'">
                             <b-button
+                                v-if="v.value.startsWith('http')"
+                                :href="v.value"
+                                target="_blank">
+                                Download
+                            </b-button>
+                            <b-button
+                                v-if="!v.value.startsWith('http')"
                                 :href="host + v.value"
                                 target="_blank">
                                 Download
