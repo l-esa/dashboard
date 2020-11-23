@@ -216,7 +216,7 @@ export default {
                 this.updateViews();
             }
         },
-        updateViews() {
+        updateViews(notifyUpdate = true) {
             console.log(this.currentlyActiveTab);
             var config = [];
             for(const p in this.viewParameters) {
@@ -226,7 +226,9 @@ export default {
                 .then(res => {
                     this.views = res.data;
                     this.dots = [];
-                    this.$toastr.s("Views updated successfully");
+                    if (notifyUpdate) {
+                        this.$toastr.s("Views updated successfully");
+                    }
                 })
                 .catch(err => {
                     console.error(err);
@@ -260,7 +262,12 @@ export default {
             this.stompClient.connect({}, () => {
                     this.connected = true;
                     this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
-                        _this.$toastr.i(message.body);
+                        var msg = JSON.parse(message.body);
+                        if (msg.type.toLowerCase() == 'refresh') {
+                            _this.updateViews(false);
+                        } else if (msg.type.toLowerCase() == 'toastr') {
+                            _this.$toastr.i(msg.text);
+                        }
                     });
                 }, error => {
                     console.log(error);
