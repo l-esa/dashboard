@@ -1,60 +1,60 @@
 <template>
     <div>
-        <header class="mx-3 mt-3"><h5>Instances</h5></header>
-          <b-list-group class="py-2" flush>
-            <b-list-group-item
-                class="bg-light"
-                v-bind:key="i.id"
-                v-for="i in instances"
-                v-b-toggle="'details-id-' + i.id">
-                <b-button
-                  size="sm"
-                  variant="outline-secondary"
-                  class="float-right ml-1"
-                  :to="{ name: 'InstanceViewer', params: { id: i.id, host: minerIdToHost(i.miner.id) }}"
-                  v-b-tooltip.hover.bottom="'Open this instance'"
-                  v-on:click.stop="">
-                  <font-awesome-icon icon="folder-open" />
-                </b-button>
-                <font-awesome-icon icon="sliders-h" />
-                {{ i.configuration.name }}
-                <b-collapse class="pt-2" :id="'details-id-' + i.id">
-                  <small
-                    v-b-tooltip.hover="i.configuration.stream.processName"
-                    style="white-space: nowrap; overflow: hidden; display:block;"
-                    class="mb-1"
-                    ><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small>
-                  <small
-                    v-b-tooltip.hover="i.miner.name"
-                    style="white-space: nowrap; overflow: hidden; display:block;"
-                    class="mb-1"><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small>
-                  <small
-                    style="white-space: nowrap; overflow: hidden; display:block;"
-                    class="mb-1"><font-awesome-icon icon="circle"
-                    :class="instancesStatus[i.id]? 'running' : 'not-running'" />&nbsp;
-                    <span v-if="instancesStatus[i.id]">Running</span>
-                    <span v-else>Not running</span>
-                  </small>
-                  <small
-                    v-b-tooltip.hover="minerIdToHost(i.miner.id)"
-                    style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id).replace("http://", "").replace("https://", "") }}</code></small>
-                </b-collapse>
-            </b-list-group-item>
-          </b-list-group>
-          <div class="p-3">
-            <b-button block v-b-modal.new-instance>
-              <font-awesome-icon icon="plus" />
-              New instance
-            </b-button>
-          </div>
+      <header class="mx-3 mt-3 clearfix"><h5>Instances</h5></header>
+        <b-list-group class="py-2" flush>
+          <b-list-group-item
+              class="bg-light"
+              v-bind:key="i.id"
+              v-for="i in instances"
+              v-b-toggle="'details-id-' + i.id">
+              <b-button
+                size="sm"
+                variant="outline-secondary"
+                class="float-right ml-1"
+                :to="{ name: 'InstanceViewer', params: { id: i.id, host: minerIdToHost(i.miner.id) }}"
+                v-b-tooltip.hover.bottom="'Open this instance'"
+                v-on:click.stop="">
+                <font-awesome-icon icon="folder-open" />
+              </b-button>
+              <font-awesome-icon icon="sliders-h" />
+              {{ i.configuration.name }}
+              <b-collapse class="pt-2" :id="'details-id-' + i.id">
+                <small
+                  v-b-tooltip.hover="i.configuration.stream.processName"
+                  style="white-space: nowrap; overflow: hidden; display:block;"
+                  class="mb-1"
+                  ><font-awesome-icon icon="film" /> {{ i.configuration.stream.processName }}</small>
+                <small
+                  v-b-tooltip.hover="i.miner.name"
+                  style="white-space: nowrap; overflow: hidden; display:block;"
+                  class="mb-1"><font-awesome-icon icon="cogs" /> {{ i.miner.name }}</small>
+                <small
+                  style="white-space: nowrap; overflow: hidden; display:block;"
+                  class="mb-1"><font-awesome-icon icon="circle"
+                  :class="instancesStatus[i.id]? 'running' : 'not-running'" />&nbsp;
+                  <span v-if="instancesStatus[i.id]">Running</span>
+                  <span v-else>Not running</span>
+                </small>
+                <small
+                  v-b-tooltip.hover="minerIdToHost(i.miner.id)"
+                  style="white-space: nowrap; overflow: hidden; display:block;"><font-awesome-icon icon="server" /> <code>{{ minerIdToHost(i.miner.id).replace("http://", "").replace("https://", "") }}</code></small>
+              </b-collapse>
+          </b-list-group-item>
+        </b-list-group>
+        <div class="p-3">
+          <b-button block v-b-modal.new-instance>
+            <font-awesome-icon icon="plus" />
+            New instance
+          </b-button>
+        </div>
 
-          <NewInstance
-            :streams="streams"
-            :miners="miners"
-            @new-instance="newInstance" />
-          <ConfigureInstance
-            :miner="miner"
-            @configure-instance="configureInstance" />
+        <NewInstance
+          :streams="streams"
+          :miners="miners"
+          @new-instance="newInstance" />
+        <ConfigureInstance
+          :miner="miner"
+          @configure-instance="configureInstance" />
     </div>
 </template>
 
