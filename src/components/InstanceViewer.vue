@@ -46,11 +46,20 @@
                         <b-form-group
                             :key="p.name"
                             v-for="p in instance.miner.viewParameters"
-                            :label="p.name + ': (' + p.type + ')'">
+                            :label="p.name + ':'">
+                            <vue-slider
+                                v-if="p.type.toLowerCase() == 'range_0_1'"
+                                v-model="viewParameters[p.name]"
+                                :min='0'
+                                :max='1'
+                                :interval='0.01'
+                                :default='0.5'
+                                :lazy="true"></vue-slider>
                             <b-form-input
+                                v-else
                                 v-model="viewParameters[p.name]"
                                 required
-                                :placeholder="p.name"
+                                :placeholder='p.name + " (" + p.type + ")"'
                                 debounce="500"
                                 @update="parameterValueUpdated"></b-form-input>
                         </b-form-group>
@@ -137,6 +146,7 @@ import axios from 'axios';
 import Viz from "viz.js";
 import workerURL from 'file-loader!viz.js/full.render.js';
 import SvgPanZoom from "vue-svg-pan-zoom";
+import VueSlider from 'vue-slider-component'
 import { GChart } from 'vue-google-charts';
 
 import SockJS from "sockjs-client";
@@ -146,7 +156,7 @@ export default {
     name: 'InstanceViewer',
     props: ['instances','instancesStatus'],
     components: {
-        SvgPanZoom, GChart
+        SvgPanZoom, GChart, VueSlider
     },
     data() {
         return {
