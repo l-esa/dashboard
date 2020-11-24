@@ -24,20 +24,6 @@
                 Stop
             </b-button>
         </b-button-group>
-        <b-button-group class="float-right mr-3" v-if="instancesStatus[instance.id]">
-            <b-button
-                variant="outline-secondary"
-                :disabled="!connected"
-                @click="disconnect">
-                <font-awesome-icon icon="bell-slash" />
-            </b-button>
-            <b-button
-                variant="outline-secondary"
-                :disabled="connected"
-                @click="connect">
-                <font-awesome-icon icon="bell" />
-            </b-button>
-        </b-button-group>
         <h3 class="py-3">
             <font-awesome-icon icon="circle"
                 class="small"
@@ -57,11 +43,6 @@
                         <h6 class="mb-0">View configuration</h6>
                     </template>
                     <b-card-text>
-                        <b-form-group>
-                            <b-form-checkbox v-model="autoRefresh" switch>
-                                Refresh on new values
-                            </b-form-checkbox>
-                        </b-form-group>
                         <b-form-group
                             :key="p.name"
                             v-for="p in instance.miner.viewParameters"
@@ -75,8 +56,7 @@
                         </b-form-group>
 
                         <b-button
-                            @click="updateViews"
-                            v-if="!autoRefresh">
+                            @click="updateViews">
                             Update view
                         </b-button>
                     </b-card-text>
@@ -183,7 +163,6 @@ export default {
             viewParameters: {},
             views: [],
             dots: [],
-            autoRefresh: false,
             currentlyActiveTab: 0,
 
             connected: false
@@ -193,10 +172,21 @@ export default {
         this.fetchData()
     },
     watch: {
-        '$route': 'fetchData'
+        '$route': 'fetchData',
+        instancesStatus : {
+            handler() {
+                if (this.instancesStatus[this.instance.id]) {
+                    this.connect();
+                } else {
+                    this.disconnect();
+                }
+            },
+            deep: true
+        }
     },
     methods: {
         fetchData() {
+            this.disconnect();
             this.viewParameters = {};
             this.views = [];
             this.dots = [];
@@ -205,7 +195,7 @@ export default {
                 if (this.$route.params.id in this.instances) {
                     this.instance = this.instances[this.$route.params.id];
                     this.host = this.$route.params.host;
-                    this.disconnect();
+                    this.connect();
                 } else {
                     this.$router.push("/");
                 }
@@ -256,23 +246,25 @@ export default {
             this.svgpanzoom = svgpanzoom;
         },
         connect() {
-            var _this = this;
-            this.socket = new SockJS(this.host + "/websockets");
-            this.stompClient = Stomp.over(this.socket);
-            this.stompClient.connect({}, () => {
-                    this.connected = true;
-                    this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
-                        var msg = JSON.parse(message.body);
-                        if (msg.type.toLowerCase() == 'refresh') {
-                            _this.updateViews(false);
-                        } else if (msg.type.toLowerCase() == 'toastr') {
-                            _this.$toastr.i(msg.text);
-                        }
+            if (this.instancesStatus[this.instance.id]) {
+                var _this = this;
+                this.socket = new SockJS(this.host + "/websockets");
+                this.stompClient = Stomp.over(this.socket);
+                this.stompClient.connect({}, () => {
+                        this.connected = true;
+                        this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
+                            var msg = JSON.parse(message.body);
+                            if (msg.type.toLowerCase() == 'refresh') {
+                                _this.updateViews(false);
+                            } else if (msg.type.toLowerCase() == 'toastr') {
+                                _this.$toastr.i(msg.text);
+                            }
+                        });
+                    }, error => {
+                        console.log(error);
+                        this.connected = false;
                     });
-                }, error => {
-                    console.log(error);
-                    this.connected = false;
-                });
+            }
         },
         disconnect() {
             if (this.stompClient) {
