@@ -143,6 +143,7 @@
 
 <script>
 import axios from 'axios';
+import _ from 'lodash';
 import Viz from "viz.js";
 import workerURL from 'file-loader!viz.js/full.render.js';
 import SvgPanZoom from "vue-svg-pan-zoom";
@@ -267,7 +268,7 @@ export default {
                             if (msg.type.toLowerCase() == 'refresh') {
                                 _this.updateViews(false);
                             } else if (msg.type.toLowerCase() == 'toastr') {
-                                _this.$toastr.i(msg.text);
+                                _this.$toastr.i(_.escape(msg.text));
                             }
                         });
                     }, error => {
