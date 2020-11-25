@@ -54,6 +54,7 @@
           @new-instance="newInstance" />
         <ConfigureInstance
           :miner="miner"
+          :host="host"
           @configure-instance="configureInstance" />
     </div>
 </template>

@@ -31,4 +31,8 @@ export default class MinerServices {
     deleteInstance(host, instanceId) {
         return host + "/api/v1/instances/" + instanceId + "/delete";
     }
+
+    uploadFile(host) {
+        return host + "/api/v1/upload";
+    }
 }

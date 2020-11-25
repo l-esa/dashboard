@@ -9,6 +9,7 @@
                 placeholder="Instance name"
                 error="Enter the instance name name (at lest 2 character)"
                 v-model="name"
+                type="text"
                 :state="validateState('name')" />
 
             <b-form-group class="mt-3">

@@ -9,8 +9,10 @@
                 :key="p.name"
                 v-for="p in miner.configurationParameters"
                 :label="p.name + ':'"
+                :type='p.type'
                 :placeholder='p.type'
-                :error="'A ' + p.type.toLowerCase() + ' value is required'"
+                :host='host'
+                :error="'A ' + p.type.toLowerCase() + ' is required'"
                 v-model="parameters[p.name]"
                 :state="validateState(p)" />
         </form>
@@ -24,7 +26,7 @@ import { required, decimal } from 'vuelidate/lib/validators'
 
 export default {
     name: 'ConfigureInstance',
-    props: ['miner'],
+    props: ['host','miner'],
     components: {
         ValidatedInputText
     },
@@ -68,8 +70,8 @@ export default {
                     value: this.parameters[name]
                 });
             }
+            console.log(params);
             this.$emit('configure-instance', params);
-
             this.$nextTick(() => {this.$bvModal.hide('configure-instance')});
         },
         handleOk(bvModalEvt) {
