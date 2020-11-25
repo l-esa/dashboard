@@ -8,18 +8,21 @@
                 label="Process name:"
                 placeholder="Process name"
                 error="Enter process name (at lest 2 character)"
+                type="text"
                 v-model="processName"
                 :state="validateState('processName')" />
             <ValidatedInputText
                 label="MQTT-XES broker:"
                 placeholder="broker.host.com"
                 error="Enter the host of the broker (examples: <code>broker.host.net</code>)"
+                type="text"
                 v-model="brokerHost"
                 :state="validateState('brokerHost')" />
             <ValidatedInputText
                 label="MQTT base topic:"
                 placeholder="topic/moreSpecific"
                 error="Enter the base topic"
+                type="text"
                 v-model="topicBase"
                 :state="validateState('topicBase')" />
         </form>

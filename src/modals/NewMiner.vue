@@ -8,6 +8,7 @@
                 label="Miner host:"
                 placeholder="http://miner.host.net"
                 error="Enter the host of the miner (examples: <code>http://miner.host.net</code> or <code>https://miner.host.net</code>)"
+                type="text"
                 v-model="minerHost"
                 :state="validateState('minerHost')" />
         </form>
