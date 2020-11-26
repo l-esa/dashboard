@@ -7,6 +7,7 @@
         <b-navbar-nav>
           <b-nav-item v-b-toggle.sidebar-streams>Streams</b-nav-item>
           <b-nav-item v-b-toggle.sidebar-miners>Miners</b-nav-item>
+          <b-nav-item v-b-toggle.sidebar-instances>Instances</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item>About</b-nav-item>
@@ -22,18 +23,17 @@
     <SidebarStreams
       :streams="streams"
       @add-stream="addStream" />
+    
+    <SidebarInstances
+      :streams="streams"
+      :miners="miners"
+      :instances="instances"
+      :instancesStatus="instancesStatus"
+      @create-instance="createInstance" />
 
     <b-container fluid>
       <b-row>
-        <b-col cols="2" class="bg-light border-right full-height px-0">
-          <SidebarInstances
-            :streams="streams"
-            :miners="miners"
-            :instances="instances"
-            :instancesStatus="instancesStatus"
-            @create-instance="createInstance" />
-        </b-col>
-        <b-col class="p-3">
+        <b-col>
           <router-view
             :instances="instances"
             :instancesStatus="instancesStatus"
@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import SidebarStreams from './components/SidebarStreams';
-import SidebarMiners from './components/SidebarMiners';
-import SidebarInstances from './components/SidebarInstances';
+import SidebarStreams from './sidebars/SidebarStreams';
+import SidebarMiners from './sidebars/SidebarMiners';
+import SidebarInstances from './sidebars/SidebarInstances';
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -106,6 +106,7 @@ export default {
         .then(() => {
           this.refreshData();
           this.$toastr.s("New instance created");
+          this.$router.push("/");
         })
         .catch(err => console.error(err));
     },
@@ -195,7 +196,7 @@ export default {
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addMiner({host: "http://localhost:8083"})
-    this.addMiner({host: "https://miner-backend-eu1.herokuapp.com"})
+    this.addMiner({host: "https://miner-backend-eu1-testing.herokuapp.com"})
   },
   created() {
     this.pollData();

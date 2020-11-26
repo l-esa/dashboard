@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-button-group class="float-right">
+        <b-button-group class="mt-3 float-right">
             <b-button
                 variant="outline-secondary"
                 @click="$emit('delete-instance', instance)"
@@ -8,7 +8,7 @@
                 <font-awesome-icon icon="trash" />
             </b-button>
         </b-button-group>
-        <b-button-group class="float-right mr-3">
+        <b-button-group class="float-right mr-3 mt-3">
             <b-button
                 variant="outline-secondary"
                 :disabled="instancesStatus[instance.id]"
@@ -37,7 +37,7 @@
         <b-row
             fluid
             v-if="instancesStatus[instance.id]">
-            <b-col cols="3">
+            <b-col cols="2">
                 <b-card>
                     <template #header>
                         <h6 class="mb-0">View configuration</h6>
@@ -71,7 +71,7 @@
                     </b-card-text>
                 </b-card>
             </b-col>
-            <b-col cols="9">
+            <b-col cols="10">
                 <b-tabs
                     v-model="currentlyActiveTab"
                     content-class="mt-3">
