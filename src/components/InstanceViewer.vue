@@ -127,11 +127,14 @@
                                 Download
                             </b-button>
                         </div>
-                        <div v-if="v.type.toLowerCase() == 'google'">
+                        <div
+                            v-if="v.type.toLowerCase() == 'google'"
+                            class="border w-100 gchart">
                             <GChart
                                 :type="v.value.type"
                                 :data="v.value.data"
                                 :options="v.value.options"
+                                class="h-100"
                                 />
                         </div>
                     </b-tab>
@@ -313,6 +316,15 @@ export default {
     width: 100%;
     height: calc(100vh - 250px);
     /* overflow: hidden; */
+}
+.gchart {
+    background-color: #fff;
+    overflow: hidden;
+    margin-top: 1rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 250px);
 }
 .raw-tab {
     height: calc(100vh - 250px);
