@@ -19,7 +19,7 @@
                         <font-awesome-icon icon="cogs" /> {{ miner.name }}<br>
                     </span>
                     <small><font-awesome-icon icon="circle" :class="minersStatus[host]" /> {{ getMinerStatus(host) }}</small><br>
-                    <small><font-awesome-icon icon="server" /> <code>{{ host }}</code></small>
+                    <small><font-awesome-icon icon="server" /> <code>{{ host.replace("http://", "").replace("https://", "") }}</code></small>
                 </b-list-group-item>
             </b-list-group>
         </b-sidebar>
