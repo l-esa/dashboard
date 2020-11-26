@@ -179,7 +179,8 @@ export default {
             dots: [],
             currentlyActiveTab: 0,
 
-            connected: false
+            connected: false,
+            latestViewUpdateFetched: null // this data object keeps track of the last time a request to refreshing the view was made, to avoid flooding the system
         }
     },
     created() {
@@ -221,6 +222,14 @@ export default {
             }
         },
         updateViews(notifyUpdate = true) {
+            // avoid flooding the system
+            var currentTime = new Date().getTime();
+            if ((currentTime - this.latestViewUpdateFetched) < 1000) {
+                return;
+            }
+            this.latestViewUpdateFetched = new Date().getTime();
+
+            // perform the actual update of the view
             console.log(this.currentlyActiveTab);
             var config = [];
             for(const p in this.viewParameters) {
