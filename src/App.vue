@@ -78,7 +78,7 @@ export default {
       axios.get(this.$minerServices.getMiners(event.host))
         .then(res => {
             this.$set(this.minersStatus, event.host, 'online');
-            this.$set(this.miners, event.host, res.data);
+            this.$set(this.miners, event.host, _.sortBy(res.data, ['name']));
             this.refreshData();
             this.$toastr.s("New miner added");
         })
@@ -193,6 +193,7 @@ export default {
     this.addStream({processName: "BPIC15_3.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addMiner({host: "http://localhost:8083"})
     this.addMiner({host: "https://miner-backend-eu1.herokuapp.com"})
   },
