@@ -70,7 +70,6 @@ export default {
                     value: this.parameters[name]
                 });
             }
-            console.log(params);
             this.$emit('configure-instance', params);
             this.$nextTick(() => {this.$bvModal.hide('configure-instance')});
         },
