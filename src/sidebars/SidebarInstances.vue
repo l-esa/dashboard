@@ -35,9 +35,10 @@
               <font-awesome-icon icon="cogs" /> {{ i.miner.name }}
             </small>
             <small style="white-space: nowrap; overflow: hidden; display: block" class="mb-1" >
-              <font-awesome-icon icon="circle" :class="instancesStatus[i.id] ? 'running' : 'not-running'" />&nbsp;
-              <span v-if="instancesStatus[i.id]">Running</span>
-              <span v-else>Not running</span>
+              <font-awesome-icon icon="circle" :class="instancesStatus[i.id]" />&nbsp;
+              <span v-if="instancesStatus[i.id] == 'mining'">Running</span>
+              <span v-if="instancesStatus[i.id] == 'not_mining'">Not running</span>
+              <span v-if="instancesStatus[i.id] == 'configuring'">Configuring...</span>
             </small>
             <small
               v-b-tooltip.hover="minerIdToHost(i.miner.id)"
@@ -119,11 +120,15 @@ export default {
 </script>
 
 <style scoped>
-.running {
+.mining {
   color: rgb(0, 204, 0);
 }
 
-.not-running {
+.not_mining {
   color: rgb(170, 20, 20);
+}
+
+.configuring {
+  color: rgb(180, 141, 56);
 }
 </style>

@@ -12,7 +12,7 @@ export default class MinerServices {
         return host + "/api/v1/instances/" + minerId;
     }
 
-    getInstanceRunning(host, instanceId) {
+    getInstanceStatus(host, instanceId) {
         return host + "/api/v1/instances/" + instanceId + "/status";
     }
 

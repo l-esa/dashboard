@@ -93,7 +93,7 @@ export default {
         this.streams.push(event);
         this.$toastr.s("New stream added");
       } else {
-        this.$toastr.w("Stream already there");
+        // this.$toastr.w("Stream already there");
       }
     },
 
@@ -103,10 +103,13 @@ export default {
         stream: event.stream,
         parameterValues: event.parameterValues
       })
-        .then(() => {
+        .then((res) => {
           this.refreshData();
           this.$toastr.s("New instance created");
-          this.$router.push("/");
+          // this.$router.push("/");
+          console.log(res);
+          // this.$router.push({name: "InstanceViewer", params: {host: this.minerIdToHost(res.data.miner.id), id: res.data.id}});
+          // console.log("moved");
         })
         .catch(err => console.error(err));
     },
@@ -116,7 +119,7 @@ export default {
         .then(res => {
             if (res.data == true) {
                 this.$toastr.s("Instance started");
-                this.$set(this.instancesStatus, event.instance.id, true);
+                this.$set(this.instancesStatus, event.instance.id, 'mining');
             } else {
                 this.$toastr.e("Instance not started correctly");
             }
@@ -129,7 +132,7 @@ export default {
         .then(res => {
             if (res.data == true) {
                 this.$toastr.s("Instance stopped");
-                this.$set(this.instancesStatus, event.instance.id, false);
+                this.$set(this.instancesStatus, event.instance.id, 'not_mining');
             } else {
                 this.$toastr.e("Instance not stopped correctly");
             }
@@ -154,11 +157,12 @@ export default {
           .then(res => {
             for (const idx in res.data) {
               var instance = res.data[idx];
-              axios.get(this.$minerServices.getInstanceRunning(host, instance.id),{
+              axios.get(this.$minerServices.getInstanceStatus(host, instance.id),{
                 headers: {instanceId: instance.id}
               })
                 .then((res) => {
-                  this.$set(this.instancesStatus, res.config.headers.instanceId, res.data);
+                  this.$set(this.instancesStatus, res.config.headers.instanceId, res.data.toLowerCase());
+                  console.log(res.config.headers.instanceId, res.data);
                 })
                 .catch(err => console.error(err));
               if (!(instance.id in this.instances)) {
@@ -183,7 +187,7 @@ export default {
     },
 
     pollData() {
-      this.polling = setInterval(this.refreshData, 1000 * 30);
+      this.polling = setInterval(this.refreshData, 1000 * 10);
     }
   },
   beforeDestroy() {
@@ -195,8 +199,8 @@ export default {
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    // this.addMiner({host: "http://localhost:8083"})
-    this.addMiner({host: "https://miner-backend-eu1-testing.herokuapp.com"})
+    this.addMiner({host: "http://localhost:8083"})
+    // this.addMiner({host: "https://miner-backend-eu1-testing.herokuapp.com"})
   },
   created() {
     this.pollData();

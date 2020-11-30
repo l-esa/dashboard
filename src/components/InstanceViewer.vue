@@ -11,14 +11,14 @@
         <b-button-group class="float-right mr-3 mt-3">
             <b-button
                 variant="outline-secondary"
-                :disabled="instancesStatus[instance.id]"
+                :disabled="instancesStatus[instance.id] != 'not_mining'"
                 @click="$emit('start-instance', {instance: instance, host: host})">
                 <font-awesome-icon icon="play" />
                 Start
             </b-button>
             <b-button
                 variant="outline-secondary"
-                :disabled="!instancesStatus[instance.id]"
+                :disabled="instancesStatus[instance.id] != 'mining'"
                 @click="$emit('stop-instance', {instance: instance, host: host})">
                 <font-awesome-icon icon="pause" />
                 Stop
@@ -27,16 +27,17 @@
         <h3 class="py-3">
             <font-awesome-icon icon="circle"
                 class="small"
-                :class="instancesStatus[instance.id]? 'running' : 'not-running'" />
+                :class="instancesStatus[instance.id]" />
             {{ instance.configuration.name }}
             <small class="text-muted">
-                <span v-if="instancesStatus[instance.id]">(instance running)</span>
-                <span v-else>(instance not running)</span>
+                <span v-if="instancesStatus[instance.id] == 'mining'">(instance running)</span>
+                <span v-if="instancesStatus[instance.id] == 'not_mining'">(instance not running)</span>
+                <span v-if="instancesStatus[instance.id] == 'configuring'">(instance being prepared)</span>
             </small>
         </h3>
         <b-row
             fluid
-            v-if="instancesStatus[instance.id]">
+            v-if="instancesStatus[instance.id] == 'mining'">
             <b-col cols="2">
                 <b-card>
                     <template #header>
@@ -300,12 +301,16 @@ export default {
 </script>
 
 <style scoped>
-.running {
-    color: rgb(0, 204, 0);
+.mining {
+  color: rgb(0, 204, 0);
 }
 
-.not-running {
-    color: rgb(170, 20, 20);
+.not_mining {
+  color: rgb(170, 20, 20);
+}
+
+.configuring {
+  color: rgb(180, 141, 56);
 }
 
 .loading {
