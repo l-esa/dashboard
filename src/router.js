@@ -6,9 +6,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/instances/:host/:id',
+    path: '/instances/:host/:instanceId',
     name: 'InstanceViewer',
-    component: InstanceViewer
+    component: InstanceViewer,
+    props: true
   }
 ]
 

@@ -159,13 +159,12 @@ import Stomp from "webstomp-client";
 
 export default {
     name: 'InstanceViewer',
-    props: ['instances','instancesStatus'],
+    props: ['instances','instancesStatus','host','instanceId'],
     components: {
         SvgPanZoom, GChart, VueSlider
     },
     data() {
         return {
-            host: null,
             instance: {
                 id: '',
                 configuration: {
@@ -207,15 +206,26 @@ export default {
             this.views = [];
             this.dots = [];
             this.autoRefresh = false;
-            if ('id' in this.$route.params) {
-                if (this.$route.params.id in this.instances) {
-                    this.instance = this.instances[this.$route.params.id];
-                    this.host = this.$route.params.host;
-                    this.connect();
-                } else {
-                    this.$router.push("/");
-                }
+            console.log(this.instanceId);
+            console.log(this.instances);
+            console.log(this.instanceId in this.instances);
+            console.log(this.instances[this.instanceId] !== undefined);
+            if (this.instances[this.instanceId] !== undefined) {
+                this.instance = this.instances[this.instanceId];
+                // this.connect();
+            } else {
+                this.$router.push("/");
             }
+            
+            // if ('id' in this.$route.params) {
+            //     if (this.$route.params.id in this.instances) {
+            //         this.instance = this.instances[this.$route.params.id];
+            //         this.host = this.$route.params.host;
+            //         this.connect();
+            //     } else {
+            //         this.$router.push("/");
+            //     }
+            // }
         },
         parameterValueUpdated() {
             if (this.autoRefresh) {

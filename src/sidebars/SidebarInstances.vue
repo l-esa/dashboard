@@ -18,7 +18,7 @@
             class="float-right ml-1"
             :to="{
               name: 'InstanceViewer',
-              params: { id: i.id, host: minerIdToHost(i.miner.id) },
+              params: { instanceId: i.id, host: minerIdToHost(i.miner.id) },
             }"
             v-b-tooltip.hover.bottom="'Open this instance'"
             v-on:click.stop=""

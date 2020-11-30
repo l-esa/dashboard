@@ -92,8 +92,6 @@ export default {
       if (_.find(this.streams, event) == undefined) {
         this.streams.push(event);
         this.$toastr.s("New stream added");
-      } else {
-        // this.$toastr.w("Stream already there");
       }
     },
 
@@ -103,17 +101,12 @@ export default {
         stream: event.stream,
         parameterValues: event.parameterValues
       })
-        .then((res) => {
-          this.refreshData();
+        .then(() => {
           this.$toastr.s("New instance created");
-          // this.$router.push("/");
-          console.log(res);
-          // this.$router.push({name: "InstanceViewer", params: {host: this.minerIdToHost(res.data.miner.id), id: res.data.id}});
-          // console.log("moved");
+          this.refreshData();
         })
         .catch(err => console.error(err));
     },
-
     startInstance(event) {
       axios.get(this.$minerServices.startInstance(event.host, event.instance.id))
         .then(res => {
@@ -162,7 +155,6 @@ export default {
               })
                 .then((res) => {
                   this.$set(this.instancesStatus, res.config.headers.instanceId, res.data.toLowerCase());
-                  console.log(res.config.headers.instanceId, res.data);
                 })
                 .catch(err => console.error(err));
               if (!(instance.id in this.instances)) {
@@ -199,8 +191,8 @@ export default {
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
-    this.addMiner({host: "http://localhost:8083"})
-    // this.addMiner({host: "https://miner-backend-eu1-testing.herokuapp.com"})
+    // this.addMiner({host: "http://localhost:8083"})
+    this.addMiner({host: "https://miner-backend-eu1-testing.herokuapp.com"})
   },
   created() {
     this.pollData();
