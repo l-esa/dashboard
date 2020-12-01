@@ -38,7 +38,7 @@
         <b-row
             fluid
             v-if="instancesStatus[instance.id] == 'mining'">
-            <b-col cols="2">
+            <b-col cols="3">
                 <b-card>
                     <template #header>
                         <h6 class="mb-0">View configuration</h6>
@@ -55,7 +55,8 @@
                                 :max='1'
                                 :interval='0.01'
                                 :default='0.5'
-                                :lazy="true"></vue-slider>
+                                :lazy="true"
+                                @change="parameterValueUpdated"></vue-slider>
                             <b-form-input
                                 v-else
                                 v-model="viewParameters[p.name]"
@@ -65,14 +66,22 @@
                                 @update="parameterValueUpdated"></b-form-input>
                         </b-form-group>
 
+                        <b-form-checkbox
+                            v-model="updateOnNewValue"
+                            switch
+                            class="mt-3">
+                            Update on new value
+                        </b-form-checkbox>
                         <b-button
-                            @click="updateViews">
+                            v-if="!updateOnNewValue"
+                            @click="updateViews"
+                            class="mt-2">
                             Update view
                         </b-button>
                     </b-card-text>
                 </b-card>
             </b-col>
-            <b-col cols="10">
+            <b-col cols="9">
                 <b-tabs
                     v-model="currentlyActiveTab"
                     content-class="mt-3">
@@ -178,6 +187,8 @@ export default {
             views: [],
             dots: [],
             currentlyActiveTab: 0,
+            
+            updateOnNewValue: false,
 
             connected: false,
             latestViewUpdateFetched: null // this data object keeps track of the last time a request to refreshing the view was made, to avoid flooding the system
@@ -205,30 +216,17 @@ export default {
             this.viewParameters = {};
             this.views = [];
             this.dots = [];
-            this.autoRefresh = false;
-            console.log(this.instanceId);
-            console.log(this.instances);
-            console.log(this.instanceId in this.instances);
-            console.log(this.instances[this.instanceId] !== undefined);
+            this.updateOnNewValue = false;
             if (this.instances[this.instanceId] !== undefined) {
                 this.instance = this.instances[this.instanceId];
-                // this.connect();
             } else {
                 this.$router.push("/");
             }
-            
-            // if ('id' in this.$route.params) {
-            //     if (this.$route.params.id in this.instances) {
-            //         this.instance = this.instances[this.$route.params.id];
-            //         this.host = this.$route.params.host;
-            //         this.connect();
-            //     } else {
-            //         this.$router.push("/");
-            //     }
-            // }
         },
         parameterValueUpdated() {
-            if (this.autoRefresh) {
+            console.log(this.updateOnNewValue);
+            if (this.updateOnNewValue) {
+                
                 this.updateViews();
             }
         },
