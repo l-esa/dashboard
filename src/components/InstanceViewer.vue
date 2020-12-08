@@ -83,12 +83,11 @@
             </b-col>
             <b-col cols="9">
                 <b-tabs
-                    v-model="currentlyActiveTab"
                     content-class="mt-3">
                     <b-tab
                         v-bind:key="v.name"
                         v-for="v in views"
-                        @click="activateTab(v)">
+                        lazy>
                         <template #title>
                             {{ v.name }}
                             <font-awesome-icon icon="file-alt" v-if="v.type.toLowerCase() == 'raw'" />
@@ -98,54 +97,27 @@
                         </template>
                         <div
                             class="border w-100 p-2 raw-tab"
-                            v-if="v.type.toLowerCase() == 'raw'"
-                            v-html="v.value">
+                            v-if="v.type.toLowerCase() == 'raw'">
+                            <RawTab :value="v.value" />
                         </div>
                         <div v-if="v.type.toLowerCase() == 'graphviz'">
-                            <SvgPanZoom
-                                class="border w-100 svg-panzoom"
-                                :class="{ 'loading' : !(v.name in dots) }"
-                                :viewportSelector="`.graph`"
-                                :zoomEnabled="true"
-                                :controlIconsEnabled="true"
-                                :panEnabled="true"
-                                :fit="false"
-                                :center="true"
-                                :minZoom="0.1"
-                                :maxZoom="3"
-                                @svgpanzoom="registerSvgPanZoom">
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                    <g class="svg-pan-zoom_viewport" v-html="dots[v.name]"></g>
-                                </svg>
-                            </SvgPanZoom>
+                            <SvgTab :value="v.value" />
                         </div>
                         <div v-if="v.type.toLowerCase() == 'binary'">
-                            <p>File: 
-                                <code v-if="v.value.startsWith('http')" v-html="v.value" />
-                                <code v-if="!v.value.startsWith('http')" v-html="host + v.value" />
-                            </p>
-                            <b-button
+                            <BinaryTab
                                 v-if="v.value.startsWith('http')"
-                                :href="v.value"
-                                target="_blank">
-                                Download
-                            </b-button>
-                            <b-button
+                                :value="v.value" />
+                            <BinaryTab
                                 v-if="!v.value.startsWith('http')"
-                                :href="host + v.value"
-                                target="_blank">
-                                Download
-                            </b-button>
+                                :value="host + v.value" />
                         </div>
                         <div
                             v-if="v.type.toLowerCase() == 'google'"
                             class="border w-100 gchart">
-                            <GChart
-                                :type="v.value.type"
+                            <GoogleChartTab
                                 :data="v.value.data"
-                                :options="v.value.options"
-                                class="h-100"
-                                />
+                                :type="v.value.type"
+                                :options="v.value.options" />
                         </div>
                     </b-tab>
                 </b-tabs>
@@ -157,11 +129,11 @@
 <script>
 import axios from 'axios';
 import _ from 'lodash';
-import Viz from "viz.js";
-import workerURL from 'file-loader!viz.js/full.render.js';
-import SvgPanZoom from "vue-svg-pan-zoom";
-import VueSlider from 'vue-slider-component'
-import { GChart } from 'vue-google-charts';
+import VueSlider from 'vue-slider-component';
+import SvgTab from './tabs/SvgTab';
+import RawTab from './tabs/RawTab';
+import BinaryTab from './tabs/BinaryTab';
+import GoogleChartTab from './tabs/GoogleChartTab';
 
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -170,7 +142,7 @@ export default {
     name: 'InstanceViewer',
     props: ['instances','instancesStatus','host','instanceId'],
     components: {
-        SvgPanZoom, GChart, VueSlider
+        SvgTab, RawTab, BinaryTab, GoogleChartTab, VueSlider
     },
     data() {
         return {
@@ -185,8 +157,6 @@ export default {
             },
             viewParameters: {},
             views: [],
-            dots: [],
-            currentlyActiveTab: 0,
             
             updateOnNewValue: false,
 
@@ -224,9 +194,7 @@ export default {
             }
         },
         parameterValueUpdated() {
-            console.log(this.updateOnNewValue);
             if (this.updateOnNewValue) {
-                
                 this.updateViews();
             }
         },
@@ -239,7 +207,6 @@ export default {
             this.latestViewUpdateFetched = new Date().getTime();
 
             // perform the actual update of the view
-            console.log(this.currentlyActiveTab);
             var config = [];
             for(const p in this.viewParameters) {
                 config.push({name: p, value: this.viewParameters[p]});
@@ -256,26 +223,6 @@ export default {
                     console.error(err);
                     this.$toastr.e("Error in updating views");
                 });
-        },
-        activateTab(v) {
-            if (v.type.toLowerCase() == "graphviz") {
-                if (!(v.name in this.dots)) {
-                    var viz = new Viz({ workerURL });
-                    viz.renderSVGElement(v.value)
-                        .then(element => {
-                            this.viewBox = element.getAttribute("viewBox").split(" ").map(Math.ceil);
-                            let innerHTML = element.getElementsByClassName("graph")[0].innerHTML;
-                            this.$set(this.dots, v.name, innerHTML);
-                        })
-                        .catch(error => {
-                            this.$toastr.e("Error while rendering the graph");
-                            console.error(error);
-                        });
-                }
-            }
-        },
-        registerSvgPanZoom(svgpanzoom) {
-            this.svgpanzoom = svgpanzoom;
         },
         connect() {
             if (this.instancesStatus[this.instance.id]) {
@@ -321,24 +268,11 @@ export default {
   color: rgb(180, 141, 56);
 }
 
-.loading {
-	background: url('../assets/loader.svg') center center no-repeat !important;
-}
-.svg-panzoom {
-    background-color: #fff;
-    /* overflow: hidden; */
-    margin-top: 1rem;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-.svg-panzoom svg {
-    top: 0;
-    left: 0;
-    width: 100%;
+.raw-tab {
     height: calc(100vh - 250px);
-    /* overflow: hidden; */
+    overflow: auto;
 }
+
 .gchart {
     background-color: #fff;
     overflow: hidden;
@@ -347,9 +281,5 @@ export default {
     left: 0;
     width: 100%;
     height: calc(100vh - 250px);
-}
-.raw-tab {
-    height: calc(100vh - 250px);
-    overflow: auto;
 }
 </style>
