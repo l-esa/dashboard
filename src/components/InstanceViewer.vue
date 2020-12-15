@@ -231,7 +231,9 @@ export default {
                 var _this = this;
                 this.socket = new SockJS(this.host + "/websockets");
                 this.stompClient = Stomp.over(this.socket);
+                this.stompClient.debug = () => {};
                 this.stompClient.connect({}, () => {
+                        console.log("connected to: /" + _this.instance.id);
                         this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
                             var msg = JSON.parse(message.body);
                             if (msg.type.toLowerCase() == 'refresh') {
@@ -247,7 +249,8 @@ export default {
             }
         },
         disconnect() {
-            if (this.stompClient) {
+            if (this.stompClient && this.stompClient.connected) {
+                console.log("disconnected");
                 this.stompClient.disconnect();
             }
         }
