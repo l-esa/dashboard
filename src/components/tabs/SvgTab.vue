@@ -12,7 +12,7 @@
         :maxZoom="3"
         @svgpanzoom="registerSvgPanZoom">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g class="svg-pan-zoom_viewport" v-html="svg"></g>
+            <g class="graph svg-pan-zoom_viewport" v-html="svg" />
         </svg>
     </SvgPanZoom>
 </template>
