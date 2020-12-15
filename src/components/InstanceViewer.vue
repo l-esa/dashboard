@@ -160,7 +160,6 @@ export default {
             
             updateOnNewValue: false,
 
-            connected: false,
             latestViewUpdateFetched: null // this data object keeps track of the last time a request to refreshing the view was made, to avoid flooding the system
         }
     },
@@ -171,7 +170,7 @@ export default {
         '$route': 'fetchData',
         instancesStatus : {
             handler() {
-                if (this.instancesStatus[this.instance.id]) {
+                if (this.instancesStatus[this.instance.id] == 'mining') {
                     this.connect();
                 } else {
                     this.disconnect();
@@ -191,6 +190,9 @@ export default {
                 this.instance = this.instances[this.instanceId];
             } else {
                 this.$router.push("/");
+            }
+            if (this.instancesStatus[this.instance.id] == 'mining') {
+                this.connect();
             }
         },
         parameterValueUpdated() {
@@ -230,7 +232,6 @@ export default {
                 this.socket = new SockJS(this.host + "/websockets");
                 this.stompClient = Stomp.over(this.socket);
                 this.stompClient.connect({}, () => {
-                        this.connected = true;
                         this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
                             var msg = JSON.parse(message.body);
                             if (msg.type.toLowerCase() == 'refresh') {
@@ -241,15 +242,14 @@ export default {
                         });
                     }, error => {
                         console.log(error);
-                        this.connected = false;
                     });
+                this.disconnect();
             }
         },
         disconnect() {
             if (this.stompClient) {
                 this.stompClient.disconnect();
             }
-            this.connected = false;
         }
     }
 }
