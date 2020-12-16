@@ -3,7 +3,7 @@
         <b-button-group class="mt-3 float-right">
             <b-button
                 variant="outline-secondary"
-                @click="$emit('delete-instance', instance)"
+                @click="disconnect(); $emit('delete-instance', instance)"
                 v-b-tooltip.hover.top="'Delete this instance'">
                 <font-awesome-icon icon="trash" />
             </b-button>
@@ -155,11 +155,11 @@ export default {
                     viewParameters: []
                 }
             },
+            connectedInstaces: {},
             viewParameters: {},
             views: [],
             
             updateOnNewValue: false,
-
             latestViewUpdateFetched: null // this data object keeps track of the last time a request to refreshing the view was made, to avoid flooding the system
         }
     },
@@ -227,31 +227,34 @@ export default {
                 });
         },
         connect() {
-            if (this.instancesStatus[this.instance.id]) {
-                var _this = this;
-                this.socket = new SockJS(this.host + "/websockets");
-                this.stompClient = Stomp.over(this.socket);
-                this.stompClient.debug = () => {};
-                this.stompClient.connect({}, () => {
-                        console.log("connected to: /" + _this.instance.id);
-                        this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
-                            var msg = JSON.parse(message.body);
-                            if (msg.type.toLowerCase() == 'refresh') {
-                                _this.updateViews(false);
-                            } else if (msg.type.toLowerCase() == 'toastr') {
-                                _this.$toastr.i(_.escape(msg.text));
-                            }
+            if (this.instancesStatus[this.instance.id] == 'mining') {
+                if (!this.connectedInstaces[this.instance.id]) {
+                    var _this = this;
+                    this.socket = new SockJS(this.host + "/websockets");
+                    this.stompClient = Stomp.over(this.socket);
+                    this.stompClient.debug = () => {};
+                    this.stompClient.connect({}, () => {
+                            this.connectedInstaces[this.instance.id] = true;
+                            console.log("connected to: /" + _this.instance.id);
+                            this.stompClient.subscribe("/" + _this.instance.id,  function(message) {
+                                var msg = JSON.parse(message.body);
+                                if (msg.type.toLowerCase() == 'refresh') {
+                                    _this.updateViews(false);
+                                } else if (msg.type.toLowerCase() == 'toastr') {
+                                    _this.$toastr.i(_.escape(msg.text));
+                                }
+                            });
+                        }, error => {
+                            console.log(error);
                         });
-                    }, error => {
-                        console.log(error);
-                    });
-                this.disconnect();
+                }
             }
         },
         disconnect() {
             if (this.stompClient && this.stompClient.connected) {
                 console.log("disconnected");
                 this.stompClient.disconnect();
+                this.connectedInstaces[this.instance.id] = false;
             }
         }
     }
