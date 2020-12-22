@@ -196,7 +196,7 @@ export default {
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addMiner({host: "http://localhost:8083"})
     // this.addMiner({host: "https://beamline-basic-miners-eu1.herokuapp.com"})
-    this.addMiner({host: "http://beamline.compute.dtu.dk:8080"})
+    this.addMiner({host: "http://basic-miners.beamline.cloud"})
   },
   created() {
     this.pollData();
