@@ -195,7 +195,7 @@ export default {
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     // this.addMiner({host: "http://localhost:8080"})
-    this.addMiner({host: "http://basic-miner.beamline.cloud"})
+    this.addMiner({host: "http://basic-miners.beamline.cloud"})
     this.addMiner({host: "http://declare-miners.beamline.cloud"})
   },
   created() {
