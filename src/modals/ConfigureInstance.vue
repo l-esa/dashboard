@@ -10,7 +10,7 @@
                 v-for="p in miner.configurationParameters"
                 :label="p.name + ':'"
                 :type='p.type'
-                :placeholder='p.type'
+                :placeholder='p.defaultValue'
                 :host='host'
                 :error="'A ' + p.type.toLowerCase() + ' is required'"
                 v-model="parameters[p.name]"

@@ -61,7 +61,7 @@
                                 v-else
                                 v-model="viewParameters[p.name]"
                                 required
-                                :placeholder='p.name + " (" + p.type + ")"'
+                                :placeholder='p.defaultValue'
                                 debounce="500"
                                 @update="parameterValueUpdated"></b-form-input>
                         </b-form-group>
