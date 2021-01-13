@@ -1,6 +1,18 @@
 <template>
     <div>
+        <div v-if="type.toLowerCase() == 'choice'">
+            <b-form-group v-bind:label="label">
+                <b-form-radio
+                    :key="p"
+                    v-for="p in placeholder.split(';')"
+                    v-bind:state="state"
+                    @input="update"
+                    :name="label"
+                    :value="p">{{ p }}</b-form-radio>
+            </b-form-group>
+        </div>
         <b-form-group
+            v-else
             v-bind:label="label"
             v-bind:state="state">
             <b-form-file
