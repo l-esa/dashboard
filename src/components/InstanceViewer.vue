@@ -38,7 +38,7 @@
         <b-row
             fluid
             v-if="instancesStatus[instance.id] == 'mining'">
-            <b-col cols="3">
+            <b-col md="3" class="mb-3">
                 <b-card>
                     <template #header>
                         <h6 class="mb-0">View configuration</h6>
@@ -81,7 +81,7 @@
                     </b-card-text>
                 </b-card>
             </b-col>
-            <b-col cols="9">
+            <b-col md="9">
                 <b-tabs
                     content-class="mt-3">
                     <b-tab
