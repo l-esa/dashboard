@@ -198,6 +198,7 @@ export default {
     // this.addMiner({host: "http://localhost:8080"})
     this.addMiner({host: "https://basic-miners.beamline.cloud"})
     this.addMiner({host: "https://declare-miners.beamline.cloud"})
+    this.addMiner({host: "https://basic-petrinet-conformance.beamline.cloud"})
   },
   created() {
     this.pollData();
