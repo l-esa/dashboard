@@ -111,7 +111,7 @@ export default {
         .catch(err => console.error(err));
     },
     startInstance(event) {
-      axios.get(this.$minerServices.startInstance(event.host, event.instance.id))
+      axios.get(this.$minerServices.startInstance(event.protocol + "://" + event.host, event.instance.id))
         .then(res => {
             if (res.data == true) {
                 this.$toastr.s("Instance started");
@@ -124,7 +124,7 @@ export default {
     },
 
     stopInstance(event) {
-      axios.get(this.$minerServices.stopInstance(event.host, event.instance.id))
+      axios.get(this.$minerServices.stopInstance(event.protocol + "://" + event.host, event.instance.id))
         .then(res => {
             if (res.data == true) {
                 this.$toastr.s("Instance stopped");
@@ -194,10 +194,14 @@ export default {
     this.addStream({processName: "Disco Example Log", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "BPIC15_1.xes", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
     this.addStream({processName: "test", brokerHost: "broker.hivemq.com", topicBase: "pmcep"})
+    this.addStream({processName: "test", brokerHost: "localhost", topicBase: "pmcep"})
     
-    // this.addMiner({host: "http://localhost:8080"})
+    // this.addMiner({host: "http://localhost:5000"})
+    // this.addMiner({host: "http://localhost:8083"})
     this.addMiner({host: "https://basic-miners.beamline.cloud"})
     this.addMiner({host: "https://declare-miners.beamline.cloud"})
+    this.addMiner({host: "https://basic-petrinet-conformance.beamline.cloud"})
+
   },
   created() {
     this.pollData();

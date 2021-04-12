@@ -12,14 +12,14 @@
             <b-button
                 variant="outline-secondary"
                 :disabled="instancesStatus[instance.id] != 'not_mining'"
-                @click="$emit('start-instance', {instance: instance, host: host})">
+                @click="$emit('start-instance', {instance: instance, protocol: protocol, host: host})">
                 <font-awesome-icon icon="play" />
                 Start
             </b-button>
             <b-button
                 variant="outline-secondary"
                 :disabled="instancesStatus[instance.id] != 'mining'"
-                @click="$emit('stop-instance', {instance: instance, host: host})">
+                @click="$emit('stop-instance', {instance: instance, protocol: protocol, host: host})">
                 <font-awesome-icon icon="pause" />
                 Stop
             </b-button>
@@ -67,10 +67,11 @@
                         </b-form-group>
 
                         <b-form-checkbox
+                            v-if="instance.miner.viewParameters.length > 0"
                             v-model="updateOnNewValue"
                             switch
                             class="mt-3">
-                            Update on new value
+                            Update on new parameter value
                         </b-form-checkbox>
                         <b-button
                             v-if="!updateOnNewValue"
@@ -140,7 +141,7 @@ import Stomp from "webstomp-client";
 
 export default {
     name: 'InstanceViewer',
-    props: ['instances','instancesStatus','host','instanceId'],
+    props: ['instances','instancesStatus','protocol','host','instanceId'],
     components: {
         SvgTab, RawTab, BinaryTab, GoogleChartTab, VueSlider
     },
@@ -213,7 +214,7 @@ export default {
             for(const p in this.viewParameters) {
                 config.push({name: p, value: this.viewParameters[p]});
             }
-            axios.post(this.$minerServices.getInstanceView(this.host, this.instance.id), config)
+            axios.post(this.$minerServices.getInstanceView(this.protocol + "://" + this.host, this.instance.id), config)
                 .then(res => {
                     this.views = res.data;
                     this.dots = [];
@@ -230,7 +231,7 @@ export default {
             if (this.instancesStatus[this.instance.id] == 'mining') {
                 if (!this.connectedInstaces[this.instance.id]) {
                     var _this = this;
-                    this.socket = new SockJS(this.host + "/websockets");
+                    this.socket = new SockJS(this.protocol + "://" + this.host + "/websockets");
                     this.stompClient = Stomp.over(this.socket);
                     this.stompClient.debug = () => {};
                     this.stompClient.connect({}, () => {

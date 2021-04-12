@@ -18,7 +18,7 @@
             class="float-right ml-1"
             :to="{
               name: 'InstanceViewer',
-              params: { instanceId: i.id, host: minerIdToHost(i.miner.id) },
+              params: { instanceId: i.id, host: minerIdToHost(i.miner.id), protocol: minerIdToProtocol(i.miner.id) },
             }"
             v-b-tooltip.hover.bottom="'Open this instance'"
             v-on:click.stop=""
@@ -89,7 +89,17 @@ export default {
       for (const host in this.miners) {
         for (const miner in this.miners[host]) {
           if (this.miners[host][miner].id == minerId) {
-            return host;
+            return host.split("://")[1];
+          }
+        }
+      }
+      return "null";
+    },
+    minerIdToProtocol(minerId) {
+      for (const host in this.miners) {
+        for (const miner in this.miners[host]) {
+          if (this.miners[host][miner].id == minerId) {
+            return host.split("://")[0];
           }
         }
       }
