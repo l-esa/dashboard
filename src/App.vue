@@ -201,7 +201,6 @@ export default {
     this.addMiner({host: "https://basic-miners.beamline.cloud"})
     this.addMiner({host: "https://declare-miners.beamline.cloud"})
     this.addMiner({host: "https://basic-petrinet-conformance.beamline.cloud"})
-
   },
   created() {
     document.title = "Beamline Dashboard"
