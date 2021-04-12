@@ -204,6 +204,7 @@ export default {
 
   },
   created() {
+    document.title = "Beamline Dashboard"
     this.pollData();
   }
 };
