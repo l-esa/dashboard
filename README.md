@@ -1,24 +1,21 @@
-# miner-frontend
+# Beamline Dashboard
+
+This project contains the dashboard that can be used to access and control the Beamline miners. The dashboard is written in JavaScript using the Vue.js framwork.
 
 ## Project setup
+
+The setup of the project follows the typical instructions of any other Vue.js project.
+
+To install the project:
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
+To compile and hot-reload the porject for development use:
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
+To compile and minify for production use:
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+To customize the configuration see [the configuration reference](https://cli.vuejs.org/config/).
