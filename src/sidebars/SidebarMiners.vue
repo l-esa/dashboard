@@ -13,13 +13,22 @@
                 <b-list-group-item class="bg-light"
                     v-bind:key="host"
                     v-for="host in Object.keys(miners)">
-                    <span
-                        v-bind:key="miner.id"
-                        v-for="miner in miners[host]">
-                        <font-awesome-icon icon="cogs" /> {{ miner.name }}<br>
-                    </span>
-                    <small><font-awesome-icon icon="circle" :class="minersStatus[host]" /> {{ getMinerStatus(host) }}</small><br>
-                    <small><font-awesome-icon icon="server" /> <code>{{ host.replace("http://", "").replace("https://", "") }}</code></small>
+                    <table>
+                        <tr
+                            v-bind:key="miner.id"
+                            v-for="miner in miners[host]">
+                            <td class="align-top"><font-awesome-icon icon="cogs" /></td>
+                            <td>{{ miner.name }}</td>
+                        </tr>
+                        <tr>
+                            <td><small><font-awesome-icon icon="circle" :class="minersStatus[host]" /></small></td>
+                            <td><small>{{ getMinerStatus(host) }}</small></td>
+                        </tr>
+                        <tr>
+                            <td><small><font-awesome-icon icon="server" /></small></td>
+                            <td><small><code>{{ host.replace("http://", "").replace("https://", "") }}</code></small></td>
+                        </tr>
+                    </table>
                 </b-list-group-item>
             </b-list-group>
         </b-sidebar>
